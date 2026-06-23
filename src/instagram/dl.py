@@ -12,9 +12,12 @@ if __name__ == "__main__":
     L = Instaloader()
     path = pathlib.Path("data")
     path.mkdir(exist_ok=True)
-    post1 = path / "post1.json"
-    post1.write_text(json.dumps(get_post_media_urls(L.context, "DZwgJO1yEfs").to_json_dict(), indent=2))
-    post2 = path / "post2.json"
-    post2.write_text(json.dumps(get_post_media_urls(L.context, "DZkHr0oEoTk").to_json_dict(), indent=2))
-    post3 = path / "post3.json"
-    post3.write_text(json.dumps(get_post_media_urls(L.context, "DZuEHqlhlnU").to_json_dict(), indent=2))
+    posts = [
+        "DZwgJO1yEfs",  # single image post
+        "DZkHr0oEoTk",  # sidecar post with 4 items
+        "DZuEHqlhlnU",  # video post with music attribution
+    ]
+    for i, post in enumerate(posts):
+        post_path = path / f"post{i+1}.json"
+        if not post_path.exists():
+            post_path.write_text(json.dumps(get_post_media_urls(L.context, post).to_json_dict(), indent=2))
