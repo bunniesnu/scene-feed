@@ -7,3 +7,5 @@ build:
 	COMPOSE_BAKE=true $(COMPOSE) build
 run:
 	$(COMPOSE) up -d
+revision:
+	PROJECT_NAME=$(PROJECT_NAME) ./scripts/revision.sh "$(MSG)"
