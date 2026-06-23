@@ -10,7 +10,9 @@ router = APIRouter(
 
 L = None  # Instaloader instance will be initialized on first request
 
-SHORTCODE_PATTERN = re.compile(r"instagram\.com/(?:p|reel|tv)/([A-Za-z0-9_-]+)")
+SHORTCODE_PATTERN = re.compile(
+    r"^https?://(?:www\.)?instagram\.com/(?:p|reel|tv)/([A-Za-z0-9_-]+)"
+)
 
 
 def extract_shortcode(url: str) -> str:
