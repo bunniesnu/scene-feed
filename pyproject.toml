@@ -9,3 +9,12 @@ dependencies = [
     "instaloader==4.14.2",
     "pydantic>=2.13.4",
 ]
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.4.0",
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
