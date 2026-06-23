@@ -16,3 +16,5 @@ if __name__ == "__main__":
     post1.write_text(json.dumps(get_post_media_urls(L.context, "DZwgJO1yEfs").to_json_dict(), indent=2))
     post2 = path / "post2.json"
     post2.write_text(json.dumps(get_post_media_urls(L.context, "DZkHr0oEoTk").to_json_dict(), indent=2))
+    post3 = path / "post3.json"
+    post3.write_text(json.dumps(get_post_media_urls(L.context, "DZuEHqlhlnU").to_json_dict(), indent=2))
