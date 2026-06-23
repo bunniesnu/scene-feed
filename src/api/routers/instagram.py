@@ -1,6 +1,7 @@
 import re
 
 from fastapi import APIRouter, HTTPException
+from fastapi.concurrency import run_in_threadpool
 
 router = APIRouter(
     prefix="/instagram",
@@ -35,4 +36,8 @@ async def get_post_media_urls(url: str):
         raise HTTPException(status_code=422, detail=str(e))
 
     from src.instagram.dl import get_post_media_urls
-    return get_post_media_urls(L.context, shortcode)
+    return await run_in_threadpool(
+        get_post_media_urls,
+        L.context,
+        shortcode
+    )
