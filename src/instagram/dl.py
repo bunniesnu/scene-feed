@@ -7,5 +7,12 @@ def get_post_media_urls(context: InstaloaderContext, shortcode: str):
 
 if __name__ == "__main__":
     from instaloader import Instaloader
+    import pathlib
+    import json
     L = Instaloader()
-    print(get_post_media_urls(L.context, "DZwgJO1yEfs"))
+    path = pathlib.Path("data")
+    path.mkdir(exist_ok=True)
+    post1 = path / "post1.json"
+    post1.write_text(json.dumps(get_post_media_urls(L.context, "DZwgJO1yEfs").to_json_dict(), indent=2))
+    post2 = path / "post2.json"
+    post2.write_text(json.dumps(get_post_media_urls(L.context, "DZkHr0oEoTk").to_json_dict(), indent=2))

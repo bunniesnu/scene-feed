@@ -99,6 +99,10 @@ class MediaArchiveEntry(BaseModel):
             audio=audio,
         )
 
+    def to_json_dict(self) -> dict:
+        """JSON-safe dict (datetime -> ISO 8601 string), ready for json.dump()."""
+        return self.model_dump(mode="json")
+
 def get_post_media_urls(context, shortcode: str) -> MediaArchiveEntry:
     post = Post.from_shortcode(context, shortcode)
     return MediaArchiveEntry.from_post(post)
