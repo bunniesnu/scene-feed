@@ -1,3 +1,5 @@
+-- Table definitions
+
 CREATE TABLE public.archive_items (
     id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title           TEXT NOT NULL,
@@ -25,6 +27,30 @@ CREATE TABLE public.archive_item_tags (
     PRIMARY KEY (archive_item_id, tag_id)
 );
 
+
+-- Ensure RLS is enabled for the tables
+
 ALTER TABLE public.archive_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.archive_item_tags ENABLE ROW LEVEL SECURITY;
+
+
+-- Policies
+
+CREATE POLICY "Anyone can read archive items"
+    ON public.archive_items
+    FOR SELECT
+    TO anon, authenticated
+    USING (true);
+
+CREATE POLICY "Anyone can read tags"
+    ON public.tags
+    FOR SELECT
+    TO anon, authenticated
+    USING (true);
+
+CREATE POLICY "Anyone can read archive item tags"
+    ON public.archive_item_tags
+    FOR SELECT
+    TO anon, authenticated
+    USING (true);
