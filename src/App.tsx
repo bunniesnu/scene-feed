@@ -1,20 +1,14 @@
-import { useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Page } from '@/pages/home.tsx'
+
+const queryClient = new QueryClient()
 
 function App() {
-  useEffect(() => {
-    async function testSupabase() {
-      const { data, error } = await supabase
-        .from("archive_items")
-        .select("*");
-
-      console.log({ data, error });
-    }
-
-    testSupabase();
-  }, []);
-
-  return <h1>Supabase test</h1>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Page />
+    </QueryClientProvider>
+  )
 }
 
 export default App;
