@@ -5,7 +5,7 @@ function App() {
   useEffect(() => {
     async function testSupabase() {
       const { data, error } = await supabase
-        .from("test")
+        .from("archive_items")
         .select("*");
 
       console.log({ data, error });
