@@ -4,7 +4,7 @@ CREATE TABLE public.archive_items (
     id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title           TEXT NOT NULL,
     description     TEXT,
-    published_at    TIMESTAMPTZ,
+    published_at    TIMESTAMPTZ NOT NULL,
     source_name     TEXT,
     source_url      TEXT,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
