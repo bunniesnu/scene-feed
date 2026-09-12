@@ -15,7 +15,7 @@ export const onRequest = async ({ request: req }: { request: Request }) => {
     }
 
     const isInstagram = /(?:^|\.)instagram\.com$/.test(embedUrl.hostname);
-    const isPost = /^\/(?:p|reel|tv)\/[a-zA-Z0-9_-]+/.test(embedUrl.pathname);
+    const isPost = /^\/(?:[\w.-]+\/)?(?:p|reel|tv|stories)\/[\w-]+/.test(embedUrl.pathname);
 
     if (!isInstagram || !isPost) {
       return Response.json(
