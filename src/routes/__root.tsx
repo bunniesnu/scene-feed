@@ -14,9 +14,11 @@ function RootComponent() {
             SCENE-feed
           </Link>
           <nav className="flex items-center gap-4 text-sm">
-            <Button variant="outline" size="lg" className="rounded-full cursor-pointer px-4">
-              Sign In
-            </Button>
+            <Link to="/login">
+              <Button variant="outline" size="lg" className="rounded-full cursor-pointer px-4">
+                Sign In
+              </Button>
+            </Link>
           </nav>
         </div>
       </header>
