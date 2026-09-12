@@ -1,11 +1,17 @@
 import { Outlet, createRootRoute, Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/auth/status';
+import { useLogout } from "@/hooks/auth/logout"
+import { LogOut } from "lucide-react"
 
 export const Route = createRootRoute({
   component: RootComponent,
 })
 
 function RootComponent() {
+  const { isLoggedIn } = useAuth()
+  const logout = useLogout()
+
   return (
     <div className="min-h-dvh flex flex-col items-center">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -14,9 +20,13 @@ function RootComponent() {
             SCENE-feed
           </Link>
           <nav className="flex items-center gap-4 text-sm">
-            <Button variant="outline" size="lg" className="rounded-full cursor-pointer px-4">
-              Sign In
-            </Button>
+            { isLoggedIn ? <Button variant="outline" onClick={logout}>
+              <LogOut />
+            </Button> : <Link to="/login">
+              <Button variant="outline" size="lg" className="rounded-full cursor-pointer px-4">
+                Sign In
+              </Button>
+            </Link> }
           </nav>
         </div>
       </header>
