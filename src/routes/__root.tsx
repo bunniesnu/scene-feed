@@ -9,7 +9,7 @@ function RootComponent() {
   return (
     <div className="min-h-dvh flex flex-col items-center">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-        <div className="container flex h-14 items-center justify-between px-4 mx-auto">
+        <div className="max-w-3xl flex h-14 items-center justify-between px-4 mx-auto">
           <Link to="/" className="font-bold text-lg">
             SCENE-feed
           </Link>
@@ -21,7 +21,7 @@ function RootComponent() {
         </div>
       </header>
 
-      <main className="flex-1 container px-4 py-6">
+      <main className="flex-1 w-full max-w-3xl px-4 py-6">
         <Outlet />
       </main>
     </div>
