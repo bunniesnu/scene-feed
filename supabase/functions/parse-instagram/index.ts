@@ -9,7 +9,23 @@ Deno.serve(async (req) => {
       return Response.json({ error: "Missing url parameter" }, { status: 400 });
     }
 
-    const embedUrl = new URL(targetUrl);
+    let embedUrl: URL;
+    try {
+      embedUrl = new URL(targetUrl);
+    } catch {
+      return Response.json({ error: "Invalid URL format" }, { status: 400 });
+    }
+
+    const isInstagram = /(?:^|\.)instagram\.com$/.test(embedUrl.hostname);
+    const isPost = /^\/(?:p|reel|tv)\/[a-zA-Z0-9_-]+/.test(embedUrl.pathname);
+
+    if (!isInstagram || !isPost) {
+      return Response.json(
+        { error: "URL must be a valid Instagram post (/p/, /reel/, or /tv/)" },
+        { status: 400 },
+      );
+    }
+
     embedUrl.pathname = embedUrl.pathname.replace(/\/+$/, "") + "/embed/captioned/";
 
     const res = await fetch(embedUrl.toString(), {
