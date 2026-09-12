@@ -33,12 +33,13 @@ export const onRequest = async ({ request: req }: { request: Request }) => {
           .replace(/&gt;/g, ">")
           .trim()
       : null;
+    const cleanCaption = text ? text.replace(/\s*pic\.twitter\.com\/\S+$/, '').trim() : null;
 
     // Twitter snowflake ID to ISO timestamp
     const timestamp = new Date(Number((BigInt(match[1]) >> 22n) + 1288834974657n)).toISOString();
 
     return Response.json({
-      caption: text,
+      caption: cleanCaption,
       author: data.author_name,
       authorUrl: data.author_url,
       timestamp,
