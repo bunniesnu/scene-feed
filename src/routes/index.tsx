@@ -1,8 +1,10 @@
 import { useArchiveItems } from '@/api/queries/archiveItems';
 import { BottomFloatingButton } from '@/components/archive/addButton';
 import { ArchiveListItem } from '@/components/archive/archiveListItem';
+import { CreateArchiveItemDialog } from '@/components/archive/createArchivePopup';
 import { DateNavCard } from '@/components/archive/dateCard';
 import { Loading } from '@/components/handlers/loading';
+import { useAdmin } from '@/hooks/auth/admin';
 import { getTodayRange } from '@/utils/date';
 import { createFileRoute } from '@tanstack/react-router'
 import { addDays } from 'date-fns';
@@ -16,6 +18,7 @@ function RouteComponent() {
   const { start } = getTodayRange();
   const [date, setDate] = useState(start);
   const items = useArchiveItems(date, addDays(date, 1));
+  const { isAdmin } = useAdmin();
 
   return (
     <div className="flex flex-col gap-4">
@@ -37,9 +40,11 @@ function RouteComponent() {
           ))
       )}
 
-      <BottomFloatingButton>
-        Add archive
-      </BottomFloatingButton>
+      { isAdmin && <CreateArchiveItemDialog>
+        <BottomFloatingButton>
+          Add archive
+        </BottomFloatingButton>
+      </CreateArchiveItemDialog> }
     </div>
   );
 }

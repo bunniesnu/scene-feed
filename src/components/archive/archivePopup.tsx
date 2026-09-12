@@ -4,7 +4,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { ArrowUpRightIcon } from "lucide-react"
-import type { ArchiveItemWithTags } from "@/types/archive"
+import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { Badge } from "@/components/ui/badge";
 
 function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sourceUrl: string | null }) {
@@ -33,7 +33,7 @@ function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sour
   )
 }
 
-export function ArchivePopup({ item }: { item: ArchiveItemWithTags }) {
+export function ArchivePopup({ item }: { item: ArchiveItemWithTagsAndSources }) {
   return (
     <DialogContent>
       <DialogHeader>
@@ -66,7 +66,9 @@ export function ArchivePopup({ item }: { item: ArchiveItemWithTags }) {
               minute: "numeric",
               })}
           </div>
-          <SourceLink sourceName={item.source_name} sourceUrl={item.source_url} />
+          <div className="flex gap-2">
+            { item.sources.map(source => <SourceLink sourceName={source.name} sourceUrl={source.url} />) }
+          </div>
         </div>
       </div>
     </DialogContent>

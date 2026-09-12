@@ -4,11 +4,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useState } from "react"
-import type { ArchiveItemWithTags } from "@/types/archive"
+import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { ArchivePopup } from "@/components/archive/archivePopup";
 import { Badge } from "@/components/ui/badge";
 
-function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTags; onClick: () => void }) {
+function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTagsAndSources; onClick: () => void }) {
   return (
     <Card
       className="cursor-pointer p-4 transition-colors hover:bg-muted/50"
@@ -43,7 +43,7 @@ function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTags; onC
   )
 }
 
-export function ArchiveListItem({ item }: { item: ArchiveItemWithTags }) {
+export function ArchiveListItem({ item }: { item: ArchiveItemWithTagsAndSources }) {
   const [open, setOpen] = useState(false)
 
   return (

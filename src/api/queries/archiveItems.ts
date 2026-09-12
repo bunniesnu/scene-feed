@@ -12,6 +12,11 @@ async function getArchiveItems(start: Date, end: Date) {
           name,
           category
         )
+      ),
+      sources:archive_item_sources(
+        id,
+        name,
+        url
       )
     `)
     .gte("published_at", start.toISOString())
@@ -25,6 +30,7 @@ async function getArchiveItems(start: Date, end: Date) {
   return data.map((item) => ({
     ...item,
     tags: item.tags.map((itemTag) => itemTag.tag),
+    sources: item.sources,
   }));
 
 }
