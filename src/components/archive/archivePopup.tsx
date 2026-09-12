@@ -4,7 +4,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { ArrowUpRightIcon } from "lucide-react"
-import type { ArchiveItem } from "@/types/archive"
+import type { ArchiveItemWithTags } from "@/types/archive"
 
 function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sourceUrl: string | null }) {
   if (!sourceName && !sourceUrl) {
@@ -32,7 +32,7 @@ function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sour
   )
 }
 
-export function ArchivePopup({ item }: { item: ArchiveItem }) {
+export function ArchivePopup({ item }: { item: ArchiveItemWithTags }) {
   return (
     <DialogContent>
     <DialogHeader>
