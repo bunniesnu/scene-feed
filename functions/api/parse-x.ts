@@ -13,39 +13,41 @@ export const onRequest = async ({ request: req }: { request: Request }) => {
       return Response.json({ error: "Invalid X/Twitter status URL" }, { status: 400 });
     }
 
-    // Target publish.x.com directly to prevent 301 redirects
-    const res = await fetch(`https://publish.x.com/oembed?url=${encodeURIComponent(targetUrl)}&omit_script=true`);
+    const tweetId = match[1];
+    const res = await fetch(`https://api.fxtwitter.com/status/${tweetId}`);
     if (!res.ok) {
-      return Response.json({ error: "Failed to fetch oEmbed data" }, { status: res.status });
+      return Response.json({ error: "Failed to fetch tweet data" }, { status: res.status });
     }
 
     const data = (await res.json()) as {
-      html: string;
-      author_name: string;
-      author_url: string;
+      code: number;
+      message: string;
+      tweet?: {
+        text: string;
+        created_timestamp?: number;
+        author?: {
+          name: string;
+          url: string;
+        };
+      };
     };
 
-    const textMatch = data.html.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
-    const text = textMatch
-      ? textMatch[1]
-          .replace(/<br\s*\/?>/gi, "\n")
-          .replace(/<[^>]+>/g, "")
-          .replace(/&amp;/g, "&")
-          .replace(/&lt;/g, "<")
-          .replace(/&gt;/g, ">")
-          .replace(/&quot;/g, '"')
-          .replace(/&#39;/g, "'")
-          .trim()
-      : null;
+    const tweet = data.tweet;
+    if (!tweet) {
+      return Response.json({ error: data.message || "Tweet not found" }, { status: 404 });
+    }
 
-    const cleanCaption = text ? text.replace(/\s*pic\.(?:twitter|x)\.com\/\S+$/, "").trim() : null;
+    // FxTwitter already strips the trailing pic.twitter.com media link
+    const cleanCaption = tweet.text?.trim() ?? null;
 
-    const timestamp = new Date(Number((BigInt(match[1]) >> 22n) + 1288834974657n)).toISOString();
+    const timestamp = tweet.created_timestamp
+      ? new Date(tweet.created_timestamp * 1000).toISOString()
+      : new Date(Number((BigInt(tweetId) >> 22n) + 1288834974657n)).toISOString();
 
     return Response.json({
       caption: cleanCaption,
-      author: data.author_name,
-      authorUrl: data.author_url,
+      author: tweet.author?.name ?? null,
+      authorUrl: tweet.author?.url ?? null,
       timestamp,
     });
   } catch (error) {
