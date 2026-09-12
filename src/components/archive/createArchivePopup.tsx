@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { usePostArchiveItem } from "@/api/mutations/insertItem"
+import { usePostTag } from "@/api/mutations/insertTag"
 import { useTags } from "@/api/queries/tags"
 import { TAG_CATEGORIES, TAG_LABEL, type TagCategory } from "@/constants/tags"
 
@@ -25,9 +26,11 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [activeTagCategory, setActiveTagCategory] = useState<TagCategory>("member")
   const [sources, setSources] = useState<Source[]>([{ name: "", url: "" }])
+  const [newTagName, setNewTagName] = useState("")
 
   const { data: tags = [] } = useTags()
   const postArchiveItem = usePostArchiveItem()
+  const postTag = usePostTag()
 
   function toggleTag(tagId: string) {
     setSelectedTagIds((current) =>
@@ -58,6 +61,38 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   function resetForm() {
     setSelectedTagIds([])
     setSources([{ name: "", url: "" }])
+    setNewTagName("")
+  }
+
+  async function handleCreateTag() {
+    const name = newTagName.trim()
+
+    if (!name) {
+      return
+    }
+
+    const existingTag = tags.find(
+      (tag) =>
+        tag.category === activeTagCategory &&
+        tag.name.toLowerCase() === name.toLowerCase(),
+    )
+
+    if (existingTag) {
+      if (!selectedTagIds.includes(existingTag.id)) {
+        setSelectedTagIds((current) => [...current, existingTag.id])
+      }
+
+      setNewTagName("")
+      return
+    }
+
+    const tag = await postTag.mutateAsync({
+      name,
+      category: activeTagCategory,
+    })
+
+    setSelectedTagIds((current) => [...current, tag.id])
+    setNewTagName("")
   }
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
@@ -214,7 +249,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
               ))}
             </div>
 
-            <div className="min-h-20 rounded-md border p-3">
+            <div className="rounded-md border p-3">
               <div className="flex flex-wrap gap-2">
                 {tags
                   .filter((tag) => tag.category === activeTagCategory)
@@ -236,6 +271,34 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
                       </button>
                     )
                   })}
+              </div>
+
+              <div className="mt-3 flex gap-2 border-t pt-3">
+                <Input
+                  value={newTagName}
+                  onChange={(event) =>
+                    setNewTagName(event.target.value)
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault()
+                      void handleCreateTag()
+                    }
+                  }}
+                  placeholder={`${TAG_LABEL[activeTagCategory]} 태그 추가`}
+                  disabled={postTag.isPending}
+                />
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => void handleCreateTag()}
+                  disabled={
+                    !newTagName.trim() || postTag.isPending
+                  }
+                >
+                  {postTag.isPending ? "추가 중..." : "추가"}
+                </Button>
               </div>
             </div>
 
