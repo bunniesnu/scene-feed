@@ -17,7 +17,7 @@ function RouteComponent() {
   const items = useArchiveItems(date, addDays(date, 1));
 
   return (
-    <main className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <DateNavCard date={date} onDateChange={(date) => {
         setDate(date);
       }} count={items.data?.length || 0} />
@@ -35,6 +35,6 @@ function RouteComponent() {
             />
           ))
       )}
-    </main>
+    </div>
   );
 }
