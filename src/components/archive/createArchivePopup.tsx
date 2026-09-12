@@ -12,11 +12,13 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { usePostArchiveItem } from "@/api/mutations/insertItem"
 import { useTags } from "@/api/queries/tags"
+import { TAG_CATEGORIES, type TagCategory } from "@/constants/tags"
 
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
+  const [activeTagCategory, setActiveTagCategory] = useState<TagCategory>("member")
 
   const { data: tags = [] } = useTags()
   const postArchiveItem = usePostArchiveItem()
@@ -127,43 +129,74 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
           </div>
 
           <div className="space-y-3">
-            <Label>Tags</Label>
+            <div className="flex items-center justify-between">
+              <Label>Tags</Label>
 
-            <div className="space-y-4">
-              {Object.entries(
-                tags.reduce<Record<string, typeof tags>>((groups, tag) => {
-                  ;(groups[tag.category] ??= []).push(tag)
-                  return groups
-                }, {}),
-              ).map(([category, categoryTags]) => (
-                <div key={category} className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    {category}
-                  </p>
+              {selectedTagIds.length > 0 && (
+                <span className="text-xs text-muted-foreground">
+                  {selectedTagIds.length} selected
+                </span>
+              )}
+            </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    {categoryTags.map((tag) => {
-                      const selected = selectedTagIds.includes(tag.id)
-
-                      return (
-                        <button
-                          key={tag.id}
-                          type="button"
-                          onClick={() => toggleTag(tag.id)}
-                          className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
-                            selected
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border bg-background hover:bg-muted"
-                          }`}
-                        >
-                          {tag.name}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {TAG_CATEGORIES.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => setActiveTagCategory(category)}
+                  className={`shrink-0 rounded-full border px-3 py-1.5 text-sm capitalize transition-colors ${
+                    activeTagCategory === category
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-background hover:bg-muted"
+                  }`}
+                >
+                  {category}
+                </button>
               ))}
             </div>
+
+            <div className="min-h-20 rounded-md border p-3">
+              <div className="flex flex-wrap gap-2">
+                {tags
+                  .filter((tag) => tag.category === activeTagCategory)
+                  .map((tag) => {
+                    const selected = selectedTagIds.includes(tag.id)
+
+                    return (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        onClick={() => toggleTag(tag.id)}
+                        className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
+                          selected
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border bg-background hover:bg-muted"
+                        }`}
+                      >
+                        {tag.name}
+                      </button>
+                    )
+                  })}
+              </div>
+            </div>
+
+            {selectedTagIds.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {tags
+                  .filter((tag) => selectedTagIds.includes(tag.id))
+                  .map((tag) => (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      onClick={() => toggleTag(tag.id)}
+                      className="rounded-full bg-muted px-2.5 py-1 text-xs"
+                    >
+                      {tag.name} ×
+                    </button>
+                  ))}
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end gap-2">
