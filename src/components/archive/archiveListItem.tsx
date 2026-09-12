@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { useState } from "react"
 import { ArrowUpRightIcon } from "lucide-react"
+import type { ArchiveItem } from "@/types/archive"
 
 function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sourceUrl: string | null }) {
   if (!sourceName && !sourceUrl) {
@@ -36,14 +37,7 @@ function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sour
 }
 
 interface ArchiveItemProps {
-  item: {
-    id: string
-    title: string
-    description: string | null
-    publishedAt: Date
-    sourceName: string | null
-    sourceUrl: string | null
-  }
+  item: ArchiveItem
 }
 
 export function ArchiveListItem({ item }: ArchiveItemProps) {
@@ -63,7 +57,7 @@ export function ArchiveListItem({ item }: ArchiveItemProps) {
               </div>
 
               <p className="text-xs text-muted-foreground">
-                {item.publishedAt.toLocaleString(undefined, {
+                {new Date(item.published_at).toLocaleString(undefined, {
                   year: "numeric",
                   month: "numeric",
                   day: "numeric",
@@ -89,7 +83,7 @@ export function ArchiveListItem({ item }: ArchiveItemProps) {
 
           <div className="flex justify-between items-center">
             <div className="text-sm text-muted-foreground">
-              {item.publishedAt.toLocaleString(undefined, {
+              {new Date(item.published_at).toLocaleString(undefined, {
                 year: "numeric",
                 month: "numeric",
                 day: "numeric",
@@ -97,7 +91,7 @@ export function ArchiveListItem({ item }: ArchiveItemProps) {
                 minute: "numeric",
               })}
             </div>
-            <SourceLink sourceName={item.sourceName} sourceUrl={item.sourceUrl} />
+            <SourceLink sourceName={item.source_name} sourceUrl={item.source_url} />
           </div>
         </div>
       </DialogContent>

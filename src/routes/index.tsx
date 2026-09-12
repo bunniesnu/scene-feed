@@ -31,14 +31,7 @@ function RouteComponent() {
       ) : (items.data?.map((item) => (
             <ArchiveListItem
               key={item.id}
-              item={{
-                id: item.id,
-                title: item.title,
-                description: item.description,
-                publishedAt: new Date(item.published_at),
-                sourceName: item.source_name,
-                sourceUrl: item.source_url,
-              }}
+              item={item}
             />
           ))
       )}
