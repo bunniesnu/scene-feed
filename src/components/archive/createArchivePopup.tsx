@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { usePostArchiveItem } from "@/api/mutations/insertItem"
 import { useTags } from "@/api/queries/tags"
-import { TAG_CATEGORIES, type TagCategory } from "@/constants/tags"
+import { TAG_CATEGORIES, TAG_LABEL, type TagCategory } from "@/constants/tags"
 
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
@@ -73,12 +73,12 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
 
       <DialogContent className="sm:max-w-lg p-5">
         <DialogHeader>
-          <DialogTitle>Add archive item</DialogTitle>
+          <DialogTitle>아카이브 추가</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">제목</Label>
             <Input
               id="title"
               name="title"
@@ -88,7 +88,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">설명</Label>
             <Textarea
               id="description"
               name="description"
@@ -98,7 +98,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="published_at">Published at</Label>
+            <Label htmlFor="published_at">날짜/시간</Label>
             <Input
               id="published_at"
               name="published_at"
@@ -109,7 +109,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="source_name">Source</Label>
+              <Label htmlFor="source_name">출처</Label>
               <Input
                 id="source_name"
                 name="source_name"
@@ -118,7 +118,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="source_url">Source URL</Label>
+              <Label htmlFor="source_url">링크</Label>
               <Input
                 id="source_url"
                 name="source_url"
@@ -130,7 +130,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label>Tags</Label>
+              <Label>태크</Label>
 
               {selectedTagIds.length > 0 && (
                 <span className="text-xs text-muted-foreground">
@@ -151,7 +151,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
                       : "border-border bg-background hover:bg-muted"
                   }`}
                 >
-                  {category}
+                  {TAG_LABEL[category]}
                 </button>
               ))}
             </div>
