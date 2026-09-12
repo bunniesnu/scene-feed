@@ -6,6 +6,7 @@ import {
 import { useState } from "react"
 import type { ArchiveItemWithTags } from "@/types/archive"
 import { ArchivePopup } from "@/components/archive/archivePopup";
+import { Badge } from "@/components/ui/badge";
 
 function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTags; onClick: () => void }) {
   return (
@@ -14,9 +15,17 @@ function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTags; onC
       onClick={onClick}
     >
       <CardContent className="flex items-center justify-between p-0">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
+        <div className="space-y-2">
+          <div>
             <span className="font-medium">{item.title}</span>
+          </div>
+
+          <div className="flex flex-wrap gap-1">
+            {item.tags.map((tag) => (
+              <Badge key={tag.id} variant="secondary">
+                {tag.name}
+              </Badge>
+            ))}
           </div>
 
           <p className="text-xs text-muted-foreground">

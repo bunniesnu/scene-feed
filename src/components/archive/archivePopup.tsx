@@ -5,6 +5,7 @@ import {
 } from "@/components/ui/dialog"
 import { ArrowUpRightIcon } from "lucide-react"
 import type { ArchiveItemWithTags } from "@/types/archive"
+import { Badge } from "@/components/ui/badge";
 
 function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sourceUrl: string | null }) {
   if (!sourceName && !sourceUrl) {
@@ -35,11 +36,20 @@ function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sour
 export function ArchivePopup({ item }: { item: ArchiveItemWithTags }) {
   return (
     <DialogContent>
-    <DialogHeader>
-        <DialogTitle>{item.title}</DialogTitle>
-    </DialogHeader>
+      <DialogHeader>
+          <DialogTitle>{item.title}</DialogTitle>
+      </DialogHeader>
 
-    <div className="space-y-4">
+      <div className="space-y-4">
+        {item.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {item.tags.map((tag) => (
+              <Badge key={tag.id} variant="secondary">
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        )}
         {item.description && (
         <p className="whitespace-pre-wrap text-sm">
             {item.description}
@@ -47,18 +57,18 @@ export function ArchivePopup({ item }: { item: ArchiveItemWithTags }) {
         )}
 
         <div className="flex justify-between items-center">
-        <div className="text-sm text-muted-foreground">
-            {new Date(item.published_at).toLocaleString(undefined, {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            })}
+          <div className="text-sm text-muted-foreground">
+              {new Date(item.published_at).toLocaleString(undefined, {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              })}
+          </div>
+          <SourceLink sourceName={item.source_name} sourceUrl={item.source_url} />
         </div>
-        <SourceLink sourceName={item.source_name} sourceUrl={item.source_url} />
-        </div>
-    </div>
+      </div>
     </DialogContent>
   )
 }
