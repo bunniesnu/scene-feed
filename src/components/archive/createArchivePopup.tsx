@@ -10,11 +10,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { postArchiveItem } from "@/api/mutations/insertItem";
+import { usePostArchiveItem } from "@/api/mutations/insertItem";
 
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const postArchiveItem = usePostArchiveItem()
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -31,12 +32,8 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
 
     setIsSubmitting(true)
     try {
-      const error = await postArchiveItem(archiveItem)
+      await postArchiveItem.mutateAsync(archiveItem)
 
-      if (error) {
-        console.error("Failed to insert archive item:", error)
-        return
-      }
       form.reset()
       setOpen(false)
     } finally {
