@@ -1,15 +1,14 @@
 name: Supabase
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
     paths:
       - "supabase/**"
+  workflow_dispatch:
 
 jobs:
   db-push:
-    name: Push database migrations
+    name: Dry-run push database migrations
     runs-on: ubuntu-latest
 
     env:
@@ -28,5 +27,5 @@ jobs:
       - name: Link Supabase project
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
 
-      - name: Push database migrations
-        run: supabase db push
+      - name: Dry run Push database migrations
+        run: supabase db push --dry-run
