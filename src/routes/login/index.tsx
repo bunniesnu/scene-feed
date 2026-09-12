@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useGoogleLogin } from '@/hooks/login/google';
+import { useGoogleLogin } from '@/hooks/auth/google';
 import {
   Card,
   CardHeader,
