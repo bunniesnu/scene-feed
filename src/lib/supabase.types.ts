@@ -24,6 +24,38 @@ export type Database = {
         }
         Relationships: []
       }
+      archive_item_sources: {
+        Row: {
+          archive_item_id: string
+          created_at: string
+          id: string
+          name: string
+          url: string
+        }
+        Insert: {
+          archive_item_id: string
+          created_at?: string
+          id?: string
+          name: string
+          url: string
+        }
+        Update: {
+          archive_item_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "archive_item_sources_archive_item_id_fkey"
+            columns: ["archive_item_id"]
+            isOneToOne: false
+            referencedRelation: "archive_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       archive_item_tags: {
         Row: {
           archive_item_id: string
@@ -60,8 +92,6 @@ export type Database = {
           description: string | null
           id: string
           published_at: string
-          source_name: string | null
-          source_url: string | null
           title: string
           updated_at: string
         }
@@ -70,8 +100,6 @@ export type Database = {
           description?: string | null
           id?: string
           published_at: string
-          source_name?: string | null
-          source_url?: string | null
           title: string
           updated_at?: string
         }
@@ -80,8 +108,6 @@ export type Database = {
           description?: string | null
           id?: string
           published_at?: string
-          source_name?: string | null
-          source_url?: string | null
           title?: string
           updated_at?: string
         }
