@@ -1,4 +1,5 @@
 import { useArchiveItems } from '@/api/queries/archiveItems';
+import { BottomFloatingButton } from '@/components/archive/addButton';
 import { ArchiveListItem } from '@/components/archive/archiveListItem';
 import { DateNavCard } from '@/components/archive/dateCard';
 import { Loading } from '@/components/handlers/loading';
@@ -35,6 +36,10 @@ function RouteComponent() {
             />
           ))
       )}
+
+      <BottomFloatingButton>
+        Add archive
+      </BottomFloatingButton>
     </div>
   );
 }
