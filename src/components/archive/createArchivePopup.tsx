@@ -10,12 +10,24 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { usePostArchiveItem } from "@/api/mutations/insertItem";
+import { usePostArchiveItem } from "@/api/mutations/insertItem"
+import { useTags } from "@/api/queries/tags"
 
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
+
+  const { data: tags = [] } = useTags()
   const postArchiveItem = usePostArchiveItem()
+
+  function toggleTag(tagId: string) {
+    setSelectedTagIds((current) =>
+      current.includes(tagId)
+        ? current.filter((id) => id !== tagId)
+        : [...current, tagId],
+    )
+  }
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -28,6 +40,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
       published_at: new Date(formData.get("published_at") as string).toISOString(),
       source_name: (formData.get("source_name") as string) || null,
       source_url: (formData.get("source_url") as string) || null,
+      tag_ids: selectedTagIds,
     }
 
     setIsSubmitting(true)
@@ -35,14 +48,23 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
       await postArchiveItem.mutateAsync(archiveItem)
 
       form.reset()
+      setSelectedTagIds([])
       setOpen(false)
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  function handleOpenChange(value: boolean) {
+    setOpen(value)
+
+    if (!value) {
+      setSelectedTagIds([])
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger>
         {children}
       </DialogTrigger>
@@ -101,6 +123,46 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
                 type="url"
                 placeholder="https://..."
               />
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label>Tags</Label>
+
+            <div className="space-y-4">
+              {Object.entries(
+                tags.reduce<Record<string, typeof tags>>((groups, tag) => {
+                  ;(groups[tag.category] ??= []).push(tag)
+                  return groups
+                }, {}),
+              ).map(([category, categoryTags]) => (
+                <div key={category} className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {category}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2">
+                    {categoryTags.map((tag) => {
+                      const selected = selectedTagIds.includes(tag.id)
+
+                      return (
+                        <button
+                          key={tag.id}
+                          type="button"
+                          onClick={() => toggleTag(tag.id)}
+                          className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
+                            selected
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-background hover:bg-muted"
+                          }`}
+                        >
+                          {tag.name}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
