@@ -190,7 +190,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
         </DialogTrigger>
 
         <DialogContent className="sm:max-w-lg p-5 max-h-9/10 overflow-y-scroll overflow-x-clip">
-          <DialogHeader className="flex flex-row items-center justify-between pb-1">
+          <DialogHeader className="flex flex-row items-center pb-1">
             <DialogTitle className="text-xl font-semibold">아카이브 추가</DialogTitle>
             <Button
               type="button"
