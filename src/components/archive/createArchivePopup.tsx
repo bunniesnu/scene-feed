@@ -138,7 +138,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
 
       <DialogContent className="sm:max-w-lg p-5">
         <DialogHeader>
-          <DialogTitle>아카이브 추가</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">아카이브 추가</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-5">
