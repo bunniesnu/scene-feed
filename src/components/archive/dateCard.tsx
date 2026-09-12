@@ -15,7 +15,7 @@ export function DateNavCard({ date, onDateChange, count = 0 }: DateNavCardProps)
   const isToday = new Date().toDateString() === date.toDateString()
 
   return (
-    <Card className="p-4">
+    <Card className="p-4 sticky top-21 z-10 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <CardContent className="flex items-center justify-between p-0">
         <div className="flex flex-col">
           <Popover>
