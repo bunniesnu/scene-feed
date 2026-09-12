@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label"
 import { isInstagramUrl, isXUrl } from "@/utils/url"
 import { useState, type SetStateAction } from "react"
 import type { Source } from "@/components/archive/createArchivePopup"
+import { InstagramLogo } from "@/components/icons/instagram"
+import { XLogo } from "@/components/icons/x"
 
 interface QuickImportDialogProps {
   onClose: () => void;
@@ -84,6 +86,17 @@ export function QuickImportDialog({ onClose, open, setDescription, setImportDial
               }}
               disabled={isParsing}
             />
+            <div className="flex items-center gap-1.5 pt-0.5 text-xs text-muted-foreground">
+              <span>지원 플랫폼:</span>
+              <span className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground">
+                <InstagramLogo />
+                Instagram
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground">
+                <XLogo />
+                Twitter
+              </span>
+            </div>
           </div>
           <div className="flex justify-end gap-2">
             <Button
