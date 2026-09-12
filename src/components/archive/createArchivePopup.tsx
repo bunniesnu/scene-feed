@@ -136,7 +136,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
         {children}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-lg p-5">
+      <DialogContent className="sm:max-w-lg p-5 max-h-9/10 overflow-y-scroll overflow-x-clip">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">아카이브 추가</DialogTitle>
         </DialogHeader>
@@ -186,7 +186,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
               </Button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-32 overflow-y-scroll">
               {sources.map((source, index) => (
                 <div key={index} className="flex gap-2">
                   <Input
@@ -250,27 +250,29 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
             </div>
 
             <div className="rounded-md border p-3">
-              <div className="flex flex-wrap gap-2">
-                {tags
-                  .filter((tag) => tag.category === activeTagCategory)
-                  .map((tag) => {
-                    const selected = selectedTagIds.includes(tag.id)
+              <div className="max-h-30 overflow-y-scroll">
+                <div className="flex flex-wrap gap-2">
+                  {tags
+                    .filter((tag) => tag.category === activeTagCategory)
+                    .map((tag) => {
+                      const selected = selectedTagIds.includes(tag.id)
 
-                    return (
-                      <button
-                        key={tag.id}
-                        type="button"
-                        onClick={() => toggleTag(tag.id)}
-                        className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
-                          selected
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border bg-background hover:bg-muted"
-                        }`}
-                      >
-                        {tag.name}
-                      </button>
-                    )
-                  })}
+                      return (
+                        <button
+                          key={tag.id}
+                          type="button"
+                          onClick={() => toggleTag(tag.id)}
+                          className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
+                            selected
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-background hover:bg-muted"
+                          }`}
+                        >
+                          {tag.name}
+                        </button>
+                      )
+                    })}
+                </div>
               </div>
 
               <div className="mt-3 flex gap-2 border-t pt-3">
