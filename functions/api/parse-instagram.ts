@@ -24,7 +24,10 @@ export const onRequest = async ({ request: req }: { request: Request }) => {
       );
     }
 
-    embedUrl.pathname = embedUrl.pathname.replace(/\/+$/, "") + "/embed/captioned/";
+    const postMatch = embedUrl.pathname.match(/\/(?:p|reel|tv|stories)\/[\w-]+/);
+    if (postMatch) {
+      embedUrl.pathname = `${postMatch[0]}/embed/captioned/`;
+    }
 
     const res = await fetch(embedUrl.toString(), {
       headers: {

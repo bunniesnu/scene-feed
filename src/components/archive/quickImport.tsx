@@ -8,9 +8,11 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { isInstagramUrl } from "@/utils/url"
+import { isInstagramUrl, isXUrl } from "@/utils/url"
 import { useState, type SetStateAction } from "react"
 import type { Source } from "@/components/archive/createArchivePopup"
+import { InstagramLogo } from "@/components/icons/instagram"
+import { XLogo } from "@/components/icons/x"
 
 interface QuickImportDialogProps {
   onClose: () => void;
@@ -29,10 +31,14 @@ export function QuickImportDialog({ onClose, open, setDescription, setImportDial
     const url = quickUrl.trim()
     if (!url) return
 
-    if (isInstagramUrl(url)) {
+    const isInsta = isInstagramUrl(url)
+    const isX = isXUrl(url)
+
+    if (isInsta || isX) {
       setIsParsing(true)
       try {
-        const res = await fetch("/api/parse-instagram", {
+        const endpoint = isInsta ? "/api/parse-instagram" : "/api/parse-x"
+        const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url }),
@@ -52,7 +58,8 @@ export function QuickImportDialog({ onClose, open, setDescription, setImportDial
       }
     }
 
-    setSources([{ name: isInstagramUrl(url) ? "Instagram" : "Link", url }])
+    const sourceName = isInsta ? "Instagram" : isX ? "X" : "Link"
+    setSources([{ name: sourceName, url }])
     onClose()
   }
 
@@ -79,6 +86,17 @@ export function QuickImportDialog({ onClose, open, setDescription, setImportDial
               }}
               disabled={isParsing}
             />
+            <div className="flex items-center gap-1.5 pt-0.5 text-xs text-muted-foreground">
+              <span>지원 플랫폼:</span>
+              <span className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground">
+                <InstagramLogo />
+                Instagram
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground">
+                <XLogo />
+                Twitter
+              </span>
+            </div>
           </div>
           <div className="flex justify-end gap-2">
             <Button
