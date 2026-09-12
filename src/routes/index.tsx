@@ -1,4 +1,5 @@
 import { useArchiveItems } from '@/api/queries/archiveItems';
+import { ArchiveListItem } from '@/components/archive/archiveListItem';
 import { getTodayRange } from '@/utils/date';
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -24,26 +25,16 @@ function RouteComponent() {
 
       {items.data?.length === 0 ? (
         <p>No archive items today.</p>
-      ) : (
-        <ul>
-          {items.data?.map((item) => (
-            <li key={item.id}>
-              <h2>{item.title}</h2>
-
-              {item.description && <p>{item.description}</p>}
-
-              {item.published_at && (
-                <time>{new Date(item.published_at).toLocaleString()}</time>
-              )}
-
-              {item.source_url && (
-                <a href={item.source_url} target="_blank" rel="noreferrer">
-                  {item.source_name ?? "Source"}
-                </a>
-              )}
-            </li>
-          ))}
-        </ul>
+      ) : (items.data?.map((item) => (
+            <ArchiveListItem
+              key={item.id}
+              item={{
+                id: item.id,
+                title: item.title,
+                publishedAt: new Date(item.published_at).toLocaleString(),
+              }}
+            />
+          ))
       )}
     </main>
   );
