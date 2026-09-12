@@ -14,11 +14,17 @@ import { usePostArchiveItem } from "@/api/mutations/insertItem"
 import { useTags } from "@/api/queries/tags"
 import { TAG_CATEGORIES, TAG_LABEL, type TagCategory } from "@/constants/tags"
 
+interface Source {
+  name: string
+  url: string
+}
+
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [activeTagCategory, setActiveTagCategory] = useState<TagCategory>("member")
+  const [sources, setSources] = useState<Source[]>([{ name: "", url: "" }])
 
   const { data: tags = [] } = useTags()
   const postArchiveItem = usePostArchiveItem()
@@ -31,6 +37,29 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
     )
   }
 
+  function updateSource(index: number, field: keyof Source, value: string) {
+    setSources((current) =>
+      current.map((source, sourceIndex) =>
+        sourceIndex === index
+          ? { ...source, [field]: value }
+          : source,
+      ),
+    )
+  }
+
+  function addSource() {
+    setSources((current) => [...current, { name: "", url: "" }])
+  }
+
+  function removeSource(index: number) {
+    setSources((current) => current.filter((_, i) => i !== index))
+  }
+
+  function resetForm() {
+    setSelectedTagIds([])
+    setSources([{ name: "", url: "" }])
+  }
+
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = event.currentTarget
@@ -40,9 +69,10 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
       title: formData.get("title") as string,
       description: (formData.get("description") as string) || null,
       published_at: new Date(formData.get("published_at") as string).toISOString(),
-      source_name: (formData.get("source_name") as string) || null,
-      source_url: (formData.get("source_url") as string) || null,
-      tag_ids: selectedTagIds,
+      sources: sources.filter(
+        (source) => source.name.trim() || source.url.trim(),
+      ),
+      // tag_ids: selectedTagIds,
     }
 
     setIsSubmitting(true)
@@ -50,7 +80,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
       await postArchiveItem.mutateAsync(archiveItem)
 
       form.reset()
-      setSelectedTagIds([])
+      resetForm()
       setOpen(false)
     } finally {
       setIsSubmitting(false)
@@ -61,7 +91,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
     setOpen(value)
 
     if (!value) {
-      setSelectedTagIds([])
+      resetForm()
     }
   }
 
@@ -107,30 +137,58 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="source_name">출처</Label>
-              <Input
-                id="source_name"
-                name="source_name"
-                placeholder="e.g. X, YouTube"
-              />
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>출처</Label>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addSource}
+              >
+                출처 추가
+              </Button>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="source_url">링크</Label>
-              <Input
-                id="source_url"
-                name="source_url"
-                type="url"
-                placeholder="https://..."
-              />
+            <div className="space-y-3">
+              {sources.map((source, index) => (
+                <div key={index} className="flex gap-2">
+                  <Input
+                    value={source.name}
+                    onChange={(event) =>
+                      updateSource(index, "name", event.target.value)
+                    }
+                    placeholder="출처 이름"
+                  />
+
+                  <Input
+                    value={source.url}
+                    onChange={(event) =>
+                      updateSource(index, "url", event.target.value)
+                    }
+                    type="url"
+                    placeholder="https://..."
+                  />
+
+                  {sources.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeSource(index)}
+                    >
+                      ×
+                    </Button>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label>태크</Label>
+              <Label>태그</Label>
 
               {selectedTagIds.length > 0 && (
                 <span className="text-xs text-muted-foreground">

@@ -5,8 +5,10 @@ interface ArchiveMutationItem {
   title: string;
   description: string | null;
   published_at: string;
-  source_name: string | null;
-  source_url: string | null;
+  sources: {
+    name: string;
+    url: string;
+  }[];
 }
 
 export function usePostArchiveItem() {
@@ -14,12 +16,32 @@ export function usePostArchiveItem() {
 
   return useMutation({
     mutationFn: async (item: ArchiveMutationItem) => {
-      const { error } = await supabase
+      const { sources, ...archiveItem } = item;
+
+      const { data, error } = await supabase
         .from("archive_items")
-        .insert(item);
+        .insert(archiveItem)
+        .select("id")
+        .single();
 
       if (error) {
         throw error;
+      }
+
+      if (sources.length > 0) {
+        const { error: sourcesError } = await supabase
+          .from("archive_item_sources")
+          .insert(
+            sources.map((source) => ({
+              archive_item_id: data.id,
+              name: source.name,
+              url: source.url,
+            })),
+          );
+
+        if (sourcesError) {
+          throw sourcesError;
+        }
       }
     },
 
