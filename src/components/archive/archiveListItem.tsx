@@ -7,6 +7,33 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useState } from "react"
+import { ArrowUpRightIcon } from "lucide-react"
+
+function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sourceUrl: string | null }) {
+  if (!sourceName && !sourceUrl) {
+    return null
+  }
+
+  if (!sourceUrl) {
+    return (
+      <p className="text-sm text-muted-foreground">
+        Source: {sourceName}
+      </p>
+    )
+  }
+
+  return (
+    <a
+      href={sourceUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-sm underline underline-offset-4 flex items-center"
+    >
+      {sourceName ? sourceName : "Open source"}
+      <ArrowUpRightIcon className="inline-block ml-1 h-4 w-4" />
+    </a>
+  )
+}
 
 interface ArchiveItemProps {
   item: {
@@ -60,33 +87,18 @@ export function ArchiveListItem({ item }: ArchiveItemProps) {
             </p>
           )}
 
-          <div className="text-sm text-muted-foreground">
-            {item.publishedAt.toLocaleString(undefined, {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            })}
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-muted-foreground">
+              {item.publishedAt.toLocaleString(undefined, {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+              })}
+            </div>
+            <SourceLink sourceName={item.sourceName} sourceUrl={item.sourceUrl} />
           </div>
-
-          {item.sourceName && (
-            <p className="text-sm">
-              Source: {item.sourceName}
-            </p>
-          )}
-
-          {item.sourceUrl && (
-            <a
-              href={item.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm underline underline-offset-4"
-              onClick={(event) => event.stopPropagation()}
-            >
-              Open source
-            </a>
-          )}
         </div>
       </DialogContent>
     </Dialog>
