@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { supabase } from "@/lib/supabase"
+import { postArchiveItem } from "@/api/mutations/insertItem";
 
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
@@ -31,9 +31,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
 
     setIsSubmitting(true)
     try {
-      const { error } = await supabase
-        .from("archive_items")
-        .insert(archiveItem)
+      const error = await postArchiveItem(archiveItem)
 
       if (error) {
         console.error("Failed to insert archive item:", error)
