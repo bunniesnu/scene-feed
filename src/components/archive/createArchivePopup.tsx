@@ -14,34 +14,21 @@ import { usePostArchiveItem } from "@/api/mutations/insertItem"
 import { usePostTag } from "@/api/mutations/insertTag"
 import { useTags } from "@/api/queries/tags"
 import { TAG_CATEGORIES, TAG_LABEL, type TagCategory } from "@/constants/tags"
+import { QuickImportDialog } from "@/components/archive/quickImport"
 
-interface Source {
+export interface Source {
   name: string
   url: string
-}
-
-function isInstagramUrl(urlStr: string): boolean {
-  try {
-    const parsed = new URL(urlStr)
-    return (
-      (parsed.hostname === "instagram.com" || parsed.hostname.endsWith(".instagram.com")) &&
-      /^\/(p|reel|tv|stories)\/[\w-]+/.test(parsed.pathname)
-    )
-  } catch {
-    return false
-  }
 }
 
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const [importDialogOpen, setImportDialogOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isParsing, setIsParsing] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [activeTagCategory, setActiveTagCategory] = useState<TagCategory>("member")
   const [sources, setSources] = useState<Source[]>([{ name: "", url: "" }])
   const [newTagName, setNewTagName] = useState("")
-  const [quickUrl, setQuickUrl] = useState("")
   const [description, setDescription] = useState("")
   const [publishedAt, setPublishedAt] = useState("")
 
@@ -79,41 +66,8 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
     setSelectedTagIds([])
     setSources([{ name: "", url: "" }])
     setNewTagName("")
-    setQuickUrl("")
     setDescription("")
     setPublishedAt("")
-  }
-
-  async function handleQuickImport() {
-    const url = quickUrl.trim()
-    if (!url) return
-
-    if (isInstagramUrl(url)) {
-      setIsParsing(true)
-      try {
-        const res = await fetch("/api/parse-instagram", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
-        })
-        if (res.ok) {
-          const data: { caption?: string; timestamp?: string } = await res.json()
-          if (data.caption) setDescription(data.caption)
-          if (data.timestamp) {
-            const d = new Date(data.timestamp)
-            if (!isNaN(d.getTime())) {
-              setPublishedAt(new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16))
-            }
-          }
-        }
-      } finally {
-        setIsParsing(false)
-      }
-    }
-
-    setSources([{ name: isInstagramUrl(url) ? "Instagram" : "Link", url }])
-    setImportDialogOpen(false)
-    setOpen(true)
   }
 
   async function handleCreateTag() {
@@ -198,7 +152,6 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
               size="sm"
               onClick={() => {
                 setOpen(false)
-                setQuickUrl(sources[0]?.url || "")
                 setImportDialogOpen(true)
               }}
             >
@@ -408,52 +361,17 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
-        <DialogContent className="sm:max-w-md p-5">
-          <DialogHeader>
-            <DialogTitle>빠른 링크 가져오기</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 pt-2">
-            <div className="space-y-2">
-              <Label htmlFor="quick-url">인스타그램 링크</Label>
-              <Input
-                id="quick-url"
-                type="url"
-                placeholder="https://www.instagram.com/p/..."
-                value={quickUrl}
-                onChange={(e) => setQuickUrl(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault()
-                    void handleQuickImport()
-                  }
-                }}
-                disabled={isParsing}
-              />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setImportDialogOpen(false)
-                  setOpen(true)
-                }}
-                disabled={isParsing}
-              >
-                취소
-              </Button>
-              <Button
-                type="button"
-                onClick={() => void handleQuickImport()}
-                disabled={!quickUrl.trim() || isParsing}
-              >
-                {isParsing ? "불러오는 중..." : "가져오기"}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <QuickImportDialog
+        onClose={() => {
+          setImportDialogOpen(false)
+          setOpen(true)
+        }}
+        open={importDialogOpen}
+        setDescription={setDescription}
+        setImportDialogOpen={setImportDialogOpen}
+        setPublishedAt={setPublishedAt}
+        setSources={setSources}
+      />
     </>
   )
 }
