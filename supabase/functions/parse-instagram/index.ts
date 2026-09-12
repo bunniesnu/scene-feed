@@ -41,8 +41,9 @@ Deno.serve(async (req) => {
     const captionBlock = html.match(/<div class="Caption"[^>]*>([\s\S]*?)<\/div>/i);
     if (captionBlock) {
       caption = captionBlock[1]
-        .replace(/<a class="CaptionUsername"[^>]*>.*?<\/a>/i, "") // remove author username
-        .replace(/<div class="CaptionComments"[^>]*>[\s\S]*?<\/div>/i, "") // remove comment count
+        .replace(/<a class="CaptionUsername"[^>]*>[\s\S]*?<\/a>/gi, "")
+        .replace(/<div class="CaptionComments"[^>]*>[\s\S]*?<\/div>/gi, "")
+        .replace(/View all \d+ comments/gi, "")
         .replace(/<br\s*\/?>/gi, "\n")
         .replace(/<[^>]+>/g, "")
         .replace(/&#064;/g, "@")
@@ -66,7 +67,7 @@ Deno.serve(async (req) => {
     const mediaIdMatch = html.match(/data-media-id="(\d+)"/);
     const mediaId = mediaIdMatch ? BigInt(mediaIdMatch[1]) : null;
     const timestamp = mediaId
-      ? new Date(Number((mediaId >> 23n) + 1314220800000n)).toISOString()
+      ? new Date(Number((mediaId >> 23n) + 1314220021721n)).toISOString()
       : null;
 
     return Response.json({ caption, timestamp });
