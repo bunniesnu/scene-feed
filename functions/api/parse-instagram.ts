@@ -1,6 +1,4 @@
-import "@supabase/functions-js/edge-runtime.d.ts";
-
-Deno.serve(async (req) => {
+export const onRequest = async ({ request: req }: { request: Request }) => {
   try {
     const reqUrl = new URL(req.url);
     const targetUrl = reqUrl.searchParams.get("url") || (await req.json().catch(() => ({}))).url;
@@ -74,4 +72,4 @@ Deno.serve(async (req) => {
   } catch (error) {
     return Response.json({ error: (error as Error).message }, { status: 400 });
   }
-});
+};
