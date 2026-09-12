@@ -1,6 +1,7 @@
 import { Outlet, createRootRoute, Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/auth/status';
+import { useLogout } from "@/hooks/auth/logout"
 import { LogOut } from "lucide-react"
 
 export const Route = createRootRoute({
@@ -8,7 +9,8 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
-  const { isLoggedIn, loading } = useAuth()
+  const { isLoggedIn } = useAuth()
+  const logout = useLogout()
 
   return (
     <div className="min-h-dvh flex flex-col items-center">
@@ -18,7 +20,9 @@ function RootComponent() {
             SCENE-feed
           </Link>
           <nav className="flex items-center gap-4 text-sm">
-            { isLoggedIn ? <LogOut /> : <Link to="/login">
+            { isLoggedIn ? <Button variant="outline" onClick={logout}>
+              <LogOut />
+            </Button> : <Link to="/login">
               <Button variant="outline" size="lg" className="rounded-full cursor-pointer px-4">
                 Sign In
               </Button>
