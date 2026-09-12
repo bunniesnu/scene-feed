@@ -4,7 +4,11 @@
   "version": "0.0.0",
   "packageManager": "pnpm@12.3.4",
   "devEngines": {
-    "runtime": { "name": "node", "version": "24.14.0", "onFail": "download" }
+    "runtime": {
+      "name": "node",
+      "version": "24.14.0",
+      "onFail": "download"
+    }
   },
   "type": "module",
   "scripts": {
