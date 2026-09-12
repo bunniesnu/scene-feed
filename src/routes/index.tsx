@@ -12,9 +12,9 @@ export const Route = createFileRoute('/')({
 })
 
 function RouteComponent() {
-  const { start, end } = getTodayRange();
+  const { start } = getTodayRange();
   const [date, setDate] = useState(start);
-  const items = useArchiveItems(date, addDays(end, 1));
+  const items = useArchiveItems(date, addDays(date, 1));
 
   return (
     <main className="flex flex-col gap-4">
