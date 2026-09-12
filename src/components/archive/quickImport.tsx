@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { isInstagramUrl } from "@/utils/url"
+import { isInstagramUrl, isXUrl } from "@/utils/url"
 import { useState, type SetStateAction } from "react"
 import type { Source } from "@/components/archive/createArchivePopup"
 
@@ -29,10 +29,14 @@ export function QuickImportDialog({ onClose, open, setDescription, setImportDial
     const url = quickUrl.trim()
     if (!url) return
 
-    if (isInstagramUrl(url)) {
+    const isInsta = isInstagramUrl(url)
+    const isX = isXUrl(url)
+
+    if (isInsta || isX) {
       setIsParsing(true)
       try {
-        const res = await fetch("/api/parse-instagram", {
+        const endpoint = isInsta ? "/api/parse-instagram" : "/api/parse-x"
+        const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url }),
@@ -52,7 +56,8 @@ export function QuickImportDialog({ onClose, open, setDescription, setImportDial
       }
     }
 
-    setSources([{ name: isInstagramUrl(url) ? "Instagram" : "Link", url }])
+    const sourceName = isInsta ? "Instagram" : isX ? "X" : "Link"
+    setSources([{ name: sourceName, url }])
     onClose()
   }
 
