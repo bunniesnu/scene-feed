@@ -34,7 +34,7 @@ function RouteComponent() {
               item={{
                 id: item.id,
                 title: item.title,
-                publishedAt: new Date(item.published_at).toLocaleString(),
+                publishedAt: new Date(item.published_at),
               }}
             />
           ))

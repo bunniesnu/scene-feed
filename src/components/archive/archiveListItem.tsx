@@ -4,7 +4,7 @@ interface ArchiveItemProps {
   item: {
     id: string
     title: string
-    publishedAt: string
+    publishedAt: Date
   }
 }
 
@@ -16,7 +16,13 @@ export function ArchiveListItem({ item }: ArchiveItemProps) {
           <div className="flex items-center gap-2">
             <span className="font-medium">{item.title}</span>
           </div>
-          <p className="text-xs text-muted-foreground">{item.publishedAt}</p>
+          <p className="text-xs text-muted-foreground">{item.publishedAt.toLocaleString(undefined, {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          })}</p>
         </div>
       </CardContent>
     </Card>
