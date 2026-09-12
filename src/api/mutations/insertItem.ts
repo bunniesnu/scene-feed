@@ -9,6 +9,7 @@ interface ArchiveMutationItem {
     name: string;
     url: string;
   }[];
+  tag_ids: string[];
 }
 
 export function usePostArchiveItem() {
@@ -16,7 +17,7 @@ export function usePostArchiveItem() {
 
   return useMutation({
     mutationFn: async (item: ArchiveMutationItem) => {
-      const { sources, ...archiveItem } = item;
+      const { sources, tag_ids, ...archiveItem } = item;
 
       const { data, error } = await supabase
         .from("archive_items")
@@ -28,12 +29,14 @@ export function usePostArchiveItem() {
         throw error;
       }
 
+      const archiveItemId = data.id;
+
       if (sources.length > 0) {
         const { error: sourcesError } = await supabase
           .from("archive_item_sources")
           .insert(
             sources.map((source) => ({
-              archive_item_id: data.id,
+              archive_item_id: archiveItemId,
               name: source.name,
               url: source.url,
             })),
@@ -41,6 +44,21 @@ export function usePostArchiveItem() {
 
         if (sourcesError) {
           throw sourcesError;
+        }
+      }
+
+      if (tag_ids.length > 0) {
+        const { error: tagsError } = await supabase
+          .from("archive_item_tags")
+          .insert(
+            tag_ids.map((tagId) => ({
+              archive_item_id: archiveItemId,
+              tag_id: tagId,
+            })),
+          );
+
+        if (tagsError) {
+          throw tagsError;
         }
       }
     },

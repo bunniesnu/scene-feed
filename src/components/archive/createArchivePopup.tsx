@@ -72,7 +72,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
       sources: sources.filter(
         (source) => source.name.trim() || source.url.trim(),
       ),
-      // tag_ids: selectedTagIds,
+      tag_ids: selectedTagIds,
     }
 
     setIsSubmitting(true)
