@@ -26,7 +26,7 @@ export function DateNavCard({ date, onDateChange, count = 0 }: DateNavCardProps)
                 {isToday && <span className="text-xs text-muted-foreground">(Today)</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="center">
+            <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
                 selected={date}
