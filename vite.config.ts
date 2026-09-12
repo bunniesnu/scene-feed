@@ -28,6 +28,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/supabase/, ""),
       },
+      "/api": {
+        target: "https://scene-feed.remined.org",
+        changeOrigin: true,
+      }
     },
   },
 })
