@@ -1,6 +1,7 @@
 import { useArchiveItems } from '@/api/queries/archiveItems';
 import { BottomFloatingButton } from '@/components/archive/addButton';
 import { ArchiveListItem } from '@/components/archive/archiveListItem';
+import { CreateArchiveItemDialog } from '@/components/archive/createArchivePopup';
 import { DateNavCard } from '@/components/archive/dateCard';
 import { Loading } from '@/components/handlers/loading';
 import { getTodayRange } from '@/utils/date';
@@ -37,9 +38,11 @@ function RouteComponent() {
           ))
       )}
 
-      <BottomFloatingButton>
-        Add archive
-      </BottomFloatingButton>
+      <CreateArchiveItemDialog>
+        <BottomFloatingButton>
+          Add archive
+        </BottomFloatingButton>
+      </CreateArchiveItemDialog>
     </div>
   );
 }
