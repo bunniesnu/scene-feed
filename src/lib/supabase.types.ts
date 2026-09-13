@@ -143,12 +143,27 @@ export type Database = {
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
+      update_archive_item: {
+        Args: {
+          p_description: string
+          p_id: string
+          p_published_at: string
+          p_sources: Database["public"]["CompositeTypes"]["source_update_input"][]
+          p_tag_ids: string[]
+          p_title: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never
+      source_update_input: {
+        id: string | null
+        name: string | null
+        url: string | null
+      }
     }
   }
 }

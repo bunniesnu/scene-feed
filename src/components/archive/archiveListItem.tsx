@@ -74,7 +74,7 @@ export function ArchiveListItem({ item }: { item: ArchiveItemWithTagsAndSources 
             await updatePostArchiveItem.mutateAsync({
               id: item.id,
               title: data.title,
-              description: data.description || null,
+              description: data.description,
               published_at: data.publishedAt,
               sources: data.sources,
               tag_ids: data.selectedTagIds,

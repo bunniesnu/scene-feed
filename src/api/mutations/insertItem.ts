@@ -4,7 +4,7 @@ import { TZDate } from "@date-fns/tz";
 
 export interface ArchiveMutationItem {
   title: string;
-  description: string | null;
+  description: string;
   published_at: TZDate;
   sources: {
     name: string;
