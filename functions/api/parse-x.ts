@@ -1,12 +1,19 @@
 export const onRequest = async ({ request: req }: { request: Request }) => {
-  try {
-    const reqUrl = new URL(req.url);
-    const body = req.method !== "GET" ? await req.json().catch(() => ({})) : {};
-    const targetUrl = reqUrl.searchParams.get("url") || body.url;
+  if (req.method !== "GET") {
+    return new Response("Method Not Allowed", {
+      status: 405,
+      headers: { Allow: "GET" },
+    });
+  }
 
-    if (!targetUrl) {
+  try {
+    const url = new URL(req.url).searchParams.get("url");
+
+    if (!url) {
       return Response.json({ error: "Missing url parameter" }, { status: 400 });
     }
+
+    const targetUrl = decodeURIComponent(url);
 
     const match = targetUrl.match(/(?:twitter|x)\.com\/[^/]+\/status\/(\d+)/i);
     if (!match) {

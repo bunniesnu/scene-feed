@@ -1,3 +1,17 @@
+export function cleanUrl(rawUrl: string): string {
+  try {
+    const parsed = new URL(rawUrl)
+    const trackingParams = [
+      "igsh", "utm_source", "utm_medium", "utm_campaign",
+      "utm_term", "utm_content", "s", "t", "ref_src"
+    ]
+    trackingParams.forEach((param) => parsed.searchParams.delete(param))
+    return parsed.toString()
+  } catch {
+    return rawUrl
+  }
+}
+
 export function isInstagramUrl(urlStr: string): boolean {
   try {
     const parsed = new URL(urlStr)

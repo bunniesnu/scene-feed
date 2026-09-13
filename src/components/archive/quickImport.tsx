@@ -8,27 +8,33 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { isInstagramUrl, isXUrl } from "@/utils/url"
-import { useState, type SetStateAction } from "react"
-import type { Source } from "@/components/archive/createArchivePopup"
+import { cleanUrl, isInstagramUrl, isXUrl } from "@/utils/url"
+import { useState } from "react"
+import type { Source } from "@/components/archive/archiveForm"
 import { InstagramLogo } from "@/components/icons/instagram"
 import { XLogo } from "@/components/icons/x"
+
+export interface QuickImportValues {
+  description: string
+  publishedAt: string
+  sources: Source[]
+}
 
 interface QuickImportDialogProps {
   onClose: () => void;
   open: boolean;
-  setDescription: (value: SetStateAction<string>) => void;
-  setImportDialogOpen: (value: SetStateAction<boolean>) => void;
-  setPublishedAt: (value: SetStateAction<string>) => void;
-  setSources: (value: SetStateAction<Source[]>) => void;
+  onImport: (values: QuickImportValues) => void;
 }
 
-export function QuickImportDialog({ onClose, open, setDescription, setImportDialogOpen, setPublishedAt, setSources }: QuickImportDialogProps) {
+export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialogProps) {
   const [isParsing, setIsParsing] = useState(false)
   const [quickUrl, setQuickUrl] = useState("")
 
   async function handleQuickImport() {
-    const url = quickUrl.trim()
+    let description = ""
+    let publishedAt = ""
+    let sources: Source[] = []
+    const url = cleanUrl(quickUrl.trim())
     if (!url) return
 
     const isInsta = isInstagramUrl(url)
@@ -38,18 +44,14 @@ export function QuickImportDialog({ onClose, open, setDescription, setImportDial
       setIsParsing(true)
       try {
         const endpoint = isInsta ? "/api/parse-instagram" : "/api/parse-x"
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
-        })
+        const res = await fetch(`${endpoint}?url=${encodeURIComponent(url)}`)
         if (res.ok) {
           const data: { caption?: string; timestamp?: string } = await res.json()
-          if (data.caption) setDescription(data.caption)
+          if (data.caption) description = data.caption
           if (data.timestamp) {
             const d = new Date(data.timestamp)
             if (!isNaN(d.getTime())) {
-              setPublishedAt(new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16))
+              publishedAt = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
             }
           }
         }
@@ -59,12 +61,17 @@ export function QuickImportDialog({ onClose, open, setDescription, setImportDial
     }
 
     const sourceName = isInsta ? "Instagram" : isX ? "X" : "Link"
-    setSources([{ name: sourceName, url }])
+    sources = [{ name: sourceName, url }]
+    onImport({
+      description,
+      publishedAt,
+      sources: sources,
+    })
     onClose()
   }
 
   return (
-    <Dialog open={open} onOpenChange={setImportDialogOpen}>
+    <Dialog open={open}>
       <DialogContent className="sm:max-w-md p-5">
         <DialogHeader>
           <DialogTitle>빠른 링크 가져오기</DialogTitle>
