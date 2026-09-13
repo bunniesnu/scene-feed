@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import { usePostArchiveItem } from "@/api/mutations/insertItem"
 import { QuickImportDialog } from "@/components/archive/quickImport"
-import { type ArchiveItemFormValues, ArchiveItemForm } from "./archiveForm"
+import { type ArchiveItemFormValues, ArchiveItemForm } from "@/components/archive/archiveForm"
 
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)

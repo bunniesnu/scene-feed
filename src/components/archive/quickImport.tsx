@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { isInstagramUrl, isXUrl } from "@/utils/url"
 import { useState, type SetStateAction } from "react"
-import type { Source } from "@/components/archive/createArchivePopup"
+import type { Source } from "@/components/archive/archiveForm"
 import { InstagramLogo } from "@/components/icons/instagram"
 import { XLogo } from "@/components/icons/x"
 
