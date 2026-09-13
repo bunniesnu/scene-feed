@@ -62,7 +62,7 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
     }
 
     const sourceName = isInsta ? "Instagram" : isX ? "X" : "Link"
-    sources = [{ name: sourceName, url }]
+    sources = [{ id: null, name: sourceName, url }]
     onImport({
       description,
       publishedAt,
