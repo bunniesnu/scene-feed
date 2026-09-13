@@ -7,11 +7,13 @@ export const onRequest = async ({ request: req }: { request: Request }) => {
   }
 
   try {
-    const targetUrl = new URL(req.url).searchParams.get("url");
+    const url = new URL(req.url).searchParams.get("url");
 
-    if (!targetUrl) {
+    if (!url) {
       return Response.json({ error: "Missing url parameter" }, { status: 400 });
     }
+
+    const targetUrl = decodeURIComponent(url);
 
     const match = targetUrl.match(/(?:twitter|x)\.com\/[^/]+\/status\/(\d+)/i);
     if (!match) {
