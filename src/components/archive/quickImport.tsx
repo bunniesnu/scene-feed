@@ -13,10 +13,11 @@ import { useState } from "react"
 import type { Source } from "@/components/archive/archiveForm"
 import { InstagramLogo } from "@/components/icons/instagram"
 import { XLogo } from "@/components/icons/x"
+import { TZDate } from "@date-fns/tz"
 
 export interface QuickImportValues {
   description: string
-  publishedAt: string
+  publishedAt: TZDate
   sources: Source[]
 }
 
@@ -32,7 +33,7 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
 
   async function handleQuickImport() {
     let description = ""
-    let publishedAt = ""
+    let publishedAt = new TZDate()
     let sources: Source[] = []
     const url = cleanUrl(quickUrl.trim())
     if (!url) return
@@ -49,9 +50,9 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
           const data: { caption?: string; timestamp?: string } = await res.json()
           if (data.caption) description = data.caption
           if (data.timestamp) {
-            const d = new Date(data.timestamp)
+            const d = new TZDate(data.timestamp)
             if (!isNaN(d.getTime())) {
-              publishedAt = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+              publishedAt = d
             }
           }
         }
