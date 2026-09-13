@@ -153,7 +153,7 @@ export function ArchiveItemForm({
         <Input
           id="published_at"
           name="published_at"
-          value={publishedAt}
+          value={publishedAt.length > 0 ? new Date(publishedAt).toISOString().slice(0, 16) : ""}
           onChange={(e) => setPublishedAt(e.target.value)}
           type="datetime-local"
           required
