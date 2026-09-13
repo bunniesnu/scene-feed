@@ -1,3 +1,6 @@
+import { format } from "date-fns"
+import { TZDate } from "@date-fns/tz"
+
 export function getTodayRange() {
   const now = new Date();
 
@@ -17,11 +20,14 @@ export function getTodayRange() {
   return { start, end };
 }
 
-export function toLocalInput(iso: string) {
-  if (!iso) return ""
-  const date = new Date(iso)
-  if (isNaN(date.getTime())) return ""
-  return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 16)
+export function toLocalInput(tzDate: TZDate): string {
+  return format(tzDate, "yyyy-MM-dd'T'HH:mm")
+}
+
+export function fromLocalInput(
+  localInput: string,
+  timeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
+): TZDate {
+  // Append seconds to ensure strict ISO-8601 parsing across all runtimes
+  return new TZDate(`${localInput}:00`, timeZone)
 }
