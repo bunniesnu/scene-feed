@@ -60,7 +60,7 @@ export function ArchivePopup({ item, onEdit }: { item: ArchiveItemWithTagsAndSou
 
         <div className="flex justify-between items-center">
           <div className="text-sm text-muted-foreground">
-              {new Date(item.published_at).toLocaleString(undefined, {
+              {item.published_at.toLocaleString(undefined, {
               year: "numeric",
               month: "numeric",
               day: "numeric",

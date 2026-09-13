@@ -33,7 +33,7 @@ function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTagsAndSo
           </div>
 
           <p className="text-xs text-muted-foreground">
-            {new Date(item.published_at).toLocaleString(undefined, {
+            {item.published_at.toLocaleString(undefined, {
               year: "numeric",
               month: "numeric",
               day: "numeric",

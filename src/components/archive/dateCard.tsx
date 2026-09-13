@@ -4,15 +4,16 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { TZDate } from "@date-fns/tz"
 
 interface DateNavCardProps {
-  date: Date
-  onDateChange: (date: Date) => void
+  date: TZDate
+  onDateChange: (date: TZDate) => void
   count?: number
 }
 
 export function DateNavCard({ date, onDateChange, count = 0 }: DateNavCardProps) {
-  const isToday = new Date().toDateString() === date.toDateString()
+  const isToday = new TZDate().toDateString() === date.toDateString()
 
   return (
     <Card className="p-4 sticky top-21 z-10 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
