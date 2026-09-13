@@ -1,7 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import { useQuery } from "@tanstack/react-query";
+import { TZDate } from "@date-fns/tz";
 
-async function getArchiveItems(start: Date, end: Date) {
+async function getArchiveItems(start: TZDate, end: TZDate) {
   const { data, error } = await supabase
     .from("archive_items")
     .select(`
@@ -29,13 +30,16 @@ async function getArchiveItems(start: Date, end: Date) {
 
   return data.map((item) => ({
     ...item,
+    created_at: new TZDate(item.created_at),
+    updated_at: new TZDate(item.updated_at),
+    published_at: new TZDate(item.published_at),
     tags: item.tags.map((itemTag) => itemTag.tag),
     sources: item.sources,
   }));
 
 }
 
-export function useArchiveItems(start: Date, end: Date) {
+export function useArchiveItems(start: TZDate, end: TZDate) {
   return useQuery({
     queryKey: ["archiveItems", start, end],
     queryFn: () => getArchiveItems(start, end),

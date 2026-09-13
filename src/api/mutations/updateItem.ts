@@ -1,28 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { TZDate } from "@date-fns/tz";
+import type { ArchiveMutationItem } from "@/api/mutations/insertItem";
 
-export interface ArchiveMutationItem {
-  title: string;
-  description: string;
-  published_at: TZDate;
+export interface UpdateArchiveMutationItem extends ArchiveMutationItem {
+  id: string;
   sources: {
+    id: string | null;
     name: string;
     url: string;
   }[];
-  tag_ids: string[];
 }
 
-export function usePostArchiveItem() {
+export function useUpdateArchiveItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (item: ArchiveMutationItem) => {
-      const { error } = await supabase.rpc("create_archive_item", {
+    mutationFn: async (item: UpdateArchiveMutationItem) => {
+      const { error } = await supabase.rpc("update_archive_item", {
+        p_id: item.id,
         p_title: item.title,
         p_description: item.description,
         p_published_at: item.published_at.toISOString(),
-        p_sources: item.sources,
+        p_sources: item.sources, 
         p_tag_ids: item.tag_ids,
       });
 

@@ -6,9 +6,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useTags } from "@/api/queries/tags"
 import { usePostTag } from "@/api/mutations/insertTag"
+import { fromLocalInput, toLocalInput } from "@/utils/date"
+import { TZDate } from "@date-fns/tz"
 
 
 export interface Source {
+  id: string | null
   name: string
   url: string
 }
@@ -16,7 +19,7 @@ export interface Source {
 export interface ArchiveItemFormValues {
   title: string
   description: string
-  publishedAt: string
+  publishedAt: TZDate
   sources: Source[]
   selectedTagIds: string[]
 }
@@ -34,10 +37,10 @@ export function ArchiveItemForm({
 }: ArchiveItemFormProps) {
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(defaultValues ? (defaultValues.selectedTagIds ? defaultValues.selectedTagIds : []) : [])
   const [activeTagCategory, setActiveTagCategory] = useState<TagCategory>("member")
-  const [sources, setSources] = useState<Source[]>(defaultValues ? (defaultValues.sources ? defaultValues.sources : [{ name: "", url: "" }]) : [{ name: "", url: "" }])
+  const [sources, setSources] = useState<Source[]>(defaultValues ? (defaultValues.sources ? defaultValues.sources : [{ id: null, name: "", url: "" }]) : [{ id: null, name: "", url: "" }])
   const [newTagName, setNewTagName] = useState("")
   const [description, setDescription] = useState(defaultValues ? (defaultValues.description ? defaultValues.description : "") : "")
-  const [publishedAt, setPublishedAt] = useState(defaultValues ? (defaultValues.publishedAt ? defaultValues.publishedAt : "") : "")
+  const [publishedAt, setPublishedAt] = useState(defaultValues ? (defaultValues.publishedAt ? defaultValues.publishedAt : null) : null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { data: tags = [] } = useTags()
   const postTag = usePostTag()
@@ -82,7 +85,7 @@ export function ArchiveItemForm({
   }
 
   function addSource() {
-    setSources((current) => [...current, { name: "", url: "" }])
+    setSources((current) => [...current, { id: null, name: "", url: "" }])
   }
 
   function updateSource(index: number, field: keyof Source, value: string) {
@@ -101,6 +104,11 @@ export function ArchiveItemForm({
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!publishedAt) {
+      alert("날짜/시간을 입력해주세요.")
+      return
+    }
+
     const form = event.currentTarget
     const formData = new FormData(form)
 
@@ -110,7 +118,7 @@ export function ArchiveItemForm({
       await onSubmit({
         title: formData.get("title") as string,
         description,
-        publishedAt: new Date(publishedAt).toISOString(),
+        publishedAt: publishedAt,
         sources: sources.filter(
           (source) => source.name.trim() || source.url.trim(),
         ),
@@ -153,8 +161,14 @@ export function ArchiveItemForm({
         <Input
           id="published_at"
           name="published_at"
-          value={publishedAt}
-          onChange={(e) => setPublishedAt(e.target.value)}
+          value={publishedAt ? toLocalInput(publishedAt) :  ""}
+          onChange={(e) => {
+            if (!e.target.value) {
+              setPublishedAt(null)
+              return
+            }
+            setPublishedAt(fromLocalInput(e.target.value, publishedAt?.timeZone))
+          }}
           type="datetime-local"
           required
         />
