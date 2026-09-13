@@ -5,7 +5,7 @@ import type { ArchiveMutationItem } from "@/api/mutations/insertItem";
 export interface UpdateArchiveMutationItem extends ArchiveMutationItem {
   id: string;
   sources: {
-    id: string;
+    id: string | null;
     name: string;
     url: string;
   }[];
@@ -30,13 +30,13 @@ export function useUpdateArchiveItem() {
         throw error;
       }
 
-      const sourceIds = sources.map((s) => s.id);
-      if (sourceIds.length > 0) {
+      const validSourceIds = sources.map((s) => s.id).filter((id) => id !== null);
+      if (sources.length > 0) {
         const { error: deleteSourcesError } = await supabase
           .from("archive_item_sources")
           .delete()
           .eq("archive_item_id", id)
-          .filter("id", "not.in", sourceIds);
+          .filter("id", "not.in", validSourceIds);
         
         if (deleteSourcesError) {
           throw deleteSourcesError;
@@ -46,7 +46,7 @@ export function useUpdateArchiveItem() {
           .from("archive_item_sources")
           .upsert(
             sources.map((source) => ({
-              id: source.id,
+              ...(source.id ? { id: source.id } : {}),
               archive_item_id: id,
               name: source.name,
               url: source.url,
