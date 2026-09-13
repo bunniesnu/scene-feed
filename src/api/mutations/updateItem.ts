@@ -36,7 +36,7 @@ export function useUpdateArchiveItem() {
           .from("archive_item_sources")
           .delete()
           .eq("archive_item_id", id)
-          .not("id", "in", `(${sourceIds.join(",")})`);
+          .filter("id", "not.in", sourceIds);
 
         const { error: sourcesError } = await supabase
           .from("archive_item_sources")
@@ -62,7 +62,7 @@ export function useUpdateArchiveItem() {
           .from("archive_item_tags")
           .delete()
           .eq("archive_item_id", id)
-          .not("tag_id", "in", `(${tag_ids.join(",")})`);
+          .filter("tag_id", "not.in", tag_ids);
 
         const { error: tagsError } = await supabase
           .from("archive_item_tags")
