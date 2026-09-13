@@ -1,6 +1,19 @@
 import type { Tables } from "@/lib/supabase.types";
+import { TZDate } from "@date-fns/tz";
 
-export type ArchiveItem = Tables<"archive_items">;
+type ArchiveItemBase = Tables<"archive_items">;
+
+export type ArchiveItem = {
+  [K in keyof ArchiveItemBase]: K extends "published_at"
+    ? undefined extends ArchiveItemBase[K]
+      ? null extends ArchiveItemBase[K]
+        ? TZDate | null | undefined
+        : TZDate | undefined
+      : null extends ArchiveItemBase[K]
+      ? TZDate | null
+      : TZDate
+    : ArchiveItemBase[K];
+};
 
 type ArchiveItemTag = Pick<
   Tables<"tags">,
