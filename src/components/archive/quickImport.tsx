@@ -44,11 +44,7 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
       setIsParsing(true)
       try {
         const endpoint = isInsta ? "/api/parse-instagram" : "/api/parse-x"
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
-        })
+        const res = await fetch(`${endpoint}?url=${encodeURIComponent(url)}`)
         if (res.ok) {
           const data: { caption?: string; timestamp?: string } = await res.json()
           if (data.caption) description = data.caption
