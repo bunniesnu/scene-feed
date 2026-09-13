@@ -3,8 +3,10 @@ import { TZDate } from "@date-fns/tz";
 
 type ArchiveItemBase = Tables<"archive_items">;
 
+type DateKeys = "published_at" | "created_at" | "updated_at";
+
 export type ArchiveItem = {
-  [K in keyof ArchiveItemBase]: K extends "published_at"
+  [K in keyof ArchiveItemBase]: K extends DateKeys
     ? undefined extends ArchiveItemBase[K]
       ? null extends ArchiveItemBase[K]
         ? TZDate | null | undefined
