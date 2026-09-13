@@ -8,13 +8,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { usePostArchiveItem } from "@/api/mutations/insertItem"
-import { QuickImportDialog } from "@/components/archive/quickImport"
+import { QuickImportDialog, type QuickImportValues } from "@/components/archive/quickImport"
 import { type ArchiveItemFormValues, ArchiveItemForm } from "@/components/archive/archiveForm"
 
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const [importDialogOpen, setImportDialogOpen] = useState(false)
   const postArchiveItem = usePostArchiveItem()
+  const [quickImportValues, setQuickImportValues] = useState<QuickImportValues | null>(null)
 
   async function handleSubmit(data: ArchiveItemFormValues) {
     await postArchiveItem.mutateAsync({
@@ -55,23 +56,21 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
           </DialogHeader>
 
           <ArchiveItemForm
+            defaultValues={quickImportValues}
             onSubmit={handleSubmit}
             onCancel={() => setOpen(false)}
           />
         </DialogContent>
       </Dialog>
 
-      {/* <QuickImportDialog
+      <QuickImportDialog
         onClose={() => {
           setImportDialogOpen(false)
           setOpen(true)
         }}
         open={importDialogOpen}
-        setDescription={setDescription}
-        setImportDialogOpen={setImportDialogOpen}
-        setPublishedAt={setPublishedAt}
-        setSources={setSources}
-      /> */}
+        onImport={(values: QuickImportValues) => setQuickImportValues(values)}
+      />
     </>
   )
 }

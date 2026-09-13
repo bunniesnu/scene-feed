@@ -22,7 +22,7 @@ export interface ArchiveItemFormValues {
 }
 
 export interface ArchiveItemFormProps {
-  defaultValues?: Partial<ArchiveItemFormValues>
+  defaultValues: Partial<ArchiveItemFormValues> | null
   onSubmit: (data: ArchiveItemFormValues) => Promise<void>
   onCancel: () => void
 }
