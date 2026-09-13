@@ -16,3 +16,12 @@ export function getTodayRange() {
 
   return { start, end };
 }
+
+export function toLocalInput(iso: string) {
+  if (!iso) return ""
+  const date = new Date(iso)
+  if (isNaN(date.getTime())) return ""
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16)
+}

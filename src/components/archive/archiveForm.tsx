@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useTags } from "@/api/queries/tags"
 import { usePostTag } from "@/api/mutations/insertTag"
+import { toLocalInput } from "@/utils/date"
 
 
 export interface Source {
@@ -153,7 +154,7 @@ export function ArchiveItemForm({
         <Input
           id="published_at"
           name="published_at"
-          value={publishedAt.length > 0 ? new Date(publishedAt).toISOString().slice(0, 16) : ""}
+          value={toLocalInput(publishedAt)}
           onChange={(e) => setPublishedAt(e.target.value)}
           type="datetime-local"
           required
