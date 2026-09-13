@@ -32,11 +32,15 @@ export function useUpdateArchiveItem() {
 
       const sourceIds = sources.map((s) => s.id);
       if (sourceIds.length > 0) {
-        await supabase
+        const { error: deleteSourcesError } = await supabase
           .from("archive_item_sources")
           .delete()
           .eq("archive_item_id", id)
           .filter("id", "not.in", sourceIds);
+        
+        if (deleteSourcesError) {
+          throw deleteSourcesError;
+        }
 
         const { error: sourcesError } = await supabase
           .from("archive_item_sources")
@@ -54,15 +58,22 @@ export function useUpdateArchiveItem() {
           throw sourcesError;
         }
       } else {
-        await supabase.from("archive_item_sources").delete().eq("archive_item_id", id);
+        const { error } = await supabase.from("archive_item_sources").delete().eq("archive_item_id", id);
+        if (error) {
+          throw error;
+        }
       }
 
       if (tag_ids.length > 0) {
-        await supabase
+        const { error: deleteTagsError } =await supabase
           .from("archive_item_tags")
           .delete()
           .eq("archive_item_id", id)
           .filter("tag_id", "not.in", tag_ids);
+        
+        if (deleteTagsError) {
+          throw deleteTagsError;
+        }
 
         const { error: tagsError } = await supabase
           .from("archive_item_tags")
@@ -75,7 +86,10 @@ export function useUpdateArchiveItem() {
           throw tagsError;
         }
       } else {
-        await supabase.from("archive_item_tags").delete().eq("archive_item_id", id);
+        const { error } = await supabase.from("archive_item_tags").delete().eq("archive_item_id", id);
+        if (error) {
+          throw error;
+        }
       }
     },
 
