@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { isInstagramUrl, isXUrl } from "@/utils/url"
+import { cleanUrl, isInstagramUrl, isXUrl } from "@/utils/url"
 import { useState } from "react"
 import type { Source } from "@/components/archive/archiveForm"
 import { InstagramLogo } from "@/components/icons/instagram"
@@ -34,7 +34,7 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
     let description = ""
     let publishedAt = ""
     let sources: Source[] = []
-    const url = quickUrl.trim()
+    const url = cleanUrl(quickUrl.trim())
     if (!url) return
 
     const isInsta = isInstagramUrl(url)
