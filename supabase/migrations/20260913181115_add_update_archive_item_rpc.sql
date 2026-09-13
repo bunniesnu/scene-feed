@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION update_archive_item(
   p_published_at TIMESTAMPTZ,
   p_sources source_update_input[],
   p_tag_ids UUID[]
-) RETURNS void LANGUAGE plpgsql AS $$
+) RETURNS void LANGUAGE plpgsql SECURITY INVOKER AS $$
 BEGIN
   -- 1. Update main item
   UPDATE archive_items 
