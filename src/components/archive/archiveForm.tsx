@@ -11,6 +11,7 @@ import { TZDate } from "@date-fns/tz"
 
 
 export interface Source {
+  id: string | null
   name: string
   url: string
 }
@@ -36,7 +37,7 @@ export function ArchiveItemForm({
 }: ArchiveItemFormProps) {
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(defaultValues ? (defaultValues.selectedTagIds ? defaultValues.selectedTagIds : []) : [])
   const [activeTagCategory, setActiveTagCategory] = useState<TagCategory>("member")
-  const [sources, setSources] = useState<Source[]>(defaultValues ? (defaultValues.sources ? defaultValues.sources : [{ name: "", url: "" }]) : [{ name: "", url: "" }])
+  const [sources, setSources] = useState<Source[]>(defaultValues ? (defaultValues.sources ? defaultValues.sources : [{ id: null, name: "", url: "" }]) : [{ id: null, name: "", url: "" }])
   const [newTagName, setNewTagName] = useState("")
   const [description, setDescription] = useState(defaultValues ? (defaultValues.description ? defaultValues.description : "") : "")
   const [publishedAt, setPublishedAt] = useState(defaultValues ? (defaultValues.publishedAt ? defaultValues.publishedAt : null) : null)
@@ -84,7 +85,7 @@ export function ArchiveItemForm({
   }
 
   function addSource() {
-    setSources((current) => [...current, { name: "", url: "" }])
+    setSources((current) => [...current, { id: null, name: "", url: "" }])
   }
 
   function updateSource(index: number, field: keyof Source, value: string) {
