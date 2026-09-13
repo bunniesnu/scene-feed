@@ -29,7 +29,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/supabase/, ""),
       },
       "/api": {
-        target: "https://scene-feed.remined.org",
+        target: "http://localhost:8787",
         changeOrigin: true,
       }
     },
