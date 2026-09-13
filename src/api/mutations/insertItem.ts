@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { TZDate } from "@date-fns/tz";
 
 interface ArchiveMutationItem {
   title: string;
   description: string | null;
-  published_at: string;
+  published_at: TZDate;
   sources: {
     name: string;
     url: string;
@@ -21,7 +22,10 @@ export function usePostArchiveItem() {
 
       const { data, error } = await supabase
         .from("archive_items")
-        .insert(archiveItem)
+        .insert({
+          ...archiveItem,
+          published_at: item.published_at.toISOString(),
+        })
         .select("id")
         .single();
 
