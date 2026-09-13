@@ -142,6 +142,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_archive_item: {
+        Args: {
+          p_description: string
+          p_published_at: string
+          p_sources: Database["public"]["CompositeTypes"]["source_input"][]
+          p_tag_ids: string[]
+          p_title: string
+        }
+        Returns: undefined
+      }
       is_admin: { Args: never; Returns: boolean }
       update_archive_item: {
         Args: {
@@ -159,6 +169,10 @@ export type Database = {
       [_ in never]: never
     }
     CompositeTypes: {
+      source_input: {
+        name: string | null
+        url: string | null
+      }
       source_update_input: {
         id: string | null
         name: string | null

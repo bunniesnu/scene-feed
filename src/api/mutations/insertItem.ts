@@ -18,59 +18,18 @@ export function usePostArchiveItem() {
 
   return useMutation({
     mutationFn: async (item: ArchiveMutationItem) => {
-      const { sources, tag_ids, ...archiveItem } = item;
-
-      const { data, error } = await supabase
-        .from("archive_items")
-        .insert({
-          ...archiveItem,
-          published_at: archiveItem.published_at.toISOString(),
-        })
-        .select("id")
-        .single();
-
-      if (error) {
-        throw error;
-      }
-
-      const archiveItemId = data.id;
-
-      if (sources.length > 0) {
-        const { error: sourcesError } = await supabase
-          .from("archive_item_sources")
-          .insert(
-            sources.map((source) => ({
-              archive_item_id: archiveItemId,
-              name: source.name,
-              url: source.url,
-            })),
-          );
-
-        if (sourcesError) {
-          throw sourcesError;
-        }
-      }
-
-      if (tag_ids.length > 0) {
-        const { error: tagsError } = await supabase
-          .from("archive_item_tags")
-          .insert(
-            tag_ids.map((tagId) => ({
-              archive_item_id: archiveItemId,
-              tag_id: tagId,
-            })),
-          );
-
-        if (tagsError) {
-          throw tagsError;
-        }
-      }
-    },
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["archiveItems"],
+      const { error } = await supabase.rpc("create_archive_item", {
+        p_title: item.title,
+        p_description: item.description,
+        p_published_at: item.published_at.toISOString(),
+        p_sources: item.sources,
+        p_tag_ids: item.tag_ids,
       });
+
+      if (error) throw error;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["archiveItems"] });
     },
   });
 }
