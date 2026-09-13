@@ -1,8 +1,13 @@
 export const onRequest = async ({ request: req }: { request: Request }) => {
+  if (req.method !== "GET") {
+    return new Response("Method Not Allowed", {
+      status: 405,
+      headers: { Allow: "GET" },
+    });
+  }
+
   try {
-    const reqUrl = new URL(req.url);
-    const body = req.method !== "GET" ? await req.json().catch(() => ({})) : {};
-    const targetUrl = reqUrl.searchParams.get("url") || body.url;
+    const targetUrl = new URL(req.url).searchParams.get("url");
 
     if (!targetUrl) {
       return Response.json({ error: "Missing url parameter" }, { status: 400 });
