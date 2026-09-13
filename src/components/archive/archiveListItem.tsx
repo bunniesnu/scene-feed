@@ -11,6 +11,7 @@ import { ArchiveItemForm } from "@/components/archive/archiveForm"
 import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { ArchivePopup } from "@/components/archive/archivePopup";
 import { Badge } from "@/components/ui/badge";
+import { useUpdateArchiveItem } from "@/api/mutations/updateItem"
 
 function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTagsAndSources; onClick: () => void }) {
   return (
@@ -50,6 +51,7 @@ function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTagsAndSo
 export function ArchiveListItem({ item }: { item: ArchiveItemWithTagsAndSources }) {
   const [open, setOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+  const updatePostArchiveItem = useUpdateArchiveItem()
 
   return <>
     <Dialog open={open && isEditing} onOpenChange={(v) => {
@@ -69,7 +71,14 @@ export function ArchiveListItem({ item }: { item: ArchiveItemWithTagsAndSources 
             selectedTagIds: item.tags.map((t) => t.id),
           }}
           onSubmit={async (data) => {
-            // TODO: update mutation
+            await updatePostArchiveItem.mutateAsync({
+              id: item.id,
+              title: data.title,
+              description: data.description || null,
+              published_at: data.publishedAt,
+              sources: data.sources,
+              tag_ids: data.selectedTagIds,
+            })
             setIsEditing(false)
           }}
           onCancel={() => setIsEditing(false)}
