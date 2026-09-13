@@ -1,9 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useState } from "react"
+import { ArchiveItemForm } from "@/components/archive/archiveForm"
 import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { ArchivePopup } from "@/components/archive/archivePopup";
 import { Badge } from "@/components/ui/badge";
@@ -45,11 +49,37 @@ function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTagsAndSo
 
 export function ArchiveListItem({ item }: { item: ArchiveItemWithTagsAndSources }) {
   const [open, setOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(v) => {
+      setOpen(v);
+      if (!v) setIsEditing(false);
+    }}>
       <DialogTrigger render={<ArchiveListItemCard item={item} onClick={() => setOpen(true)} />} />
-      <ArchivePopup item={item} />
+      {isEditing ? (
+        <DialogContent className="sm:max-w-lg p-5 max-h-9/10 overflow-y-scroll overflow-x-clip">
+          <DialogHeader className="flex flex-row items-center pb-1">
+            <DialogTitle className="text-xl font-semibold">아카이브 수정</DialogTitle>
+          </DialogHeader>
+          <ArchiveItemForm
+            defaultValues={{
+              title: item.title,
+              description: item.description ?? undefined,
+              publishedAt: item.published_at,
+              sources: item.sources,
+              selectedTagIds: item.tags.map((t) => t.id),
+            }}
+            onSubmit={async (data) => {
+              // TODO: update mutation
+              setIsEditing(false)
+            }}
+            onCancel={() => setIsEditing(false)}
+          />
+        </DialogContent>
+      ) : (
+        <ArchivePopup item={item} onEdit={() => setIsEditing(true)} />
+      )}
     </Dialog>
   )
 }

@@ -3,6 +3,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 import { ArrowUpRightIcon } from "lucide-react"
 import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { Badge } from "@/components/ui/badge";
@@ -33,11 +34,12 @@ function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sour
   )
 }
 
-export function ArchivePopup({ item }: { item: ArchiveItemWithTagsAndSources }) {
+export function ArchivePopup({ item, onEdit }: { item: ArchiveItemWithTagsAndSources, onEdit?: () => void }) {
   return (
     <DialogContent>
-      <DialogHeader>
-          <DialogTitle>{item.title}</DialogTitle>
+      <DialogHeader className="flex flex-row items-center pb-1">
+        <DialogTitle>{item.title}</DialogTitle>
+        {onEdit && <Button variant="outline" size="sm" onClick={onEdit}>수정</Button>}
       </DialogHeader>
 
       <div className="space-y-4">
