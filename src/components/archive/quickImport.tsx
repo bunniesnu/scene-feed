@@ -14,6 +14,7 @@ import type { Source } from "@/components/archive/archiveForm"
 import { InstagramLogo } from "@/components/icons/instagram"
 import { XLogo } from "@/components/icons/x"
 import { YouTubeLogo } from "@/components/icons/youtube"
+import { PlusChatLogo } from "@/components/icons/pluschat"
 import { TZDate } from "@date-fns/tz"
 
 interface SupportedPlatform {
@@ -44,7 +45,7 @@ const supportedPlatforms: SupportedPlatform[] = [
   },
   {
     name: "PlusChat",
-    icon: <YouTubeLogo />,
+    icon: <PlusChatLogo />,
     endpoint: "/api/parse-pluschat",
     parser: isPlusChatUrl,
   },
