@@ -8,11 +8,12 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { cleanUrl, isInstagramUrl, isXUrl } from "@/utils/url"
+import { cleanUrl, isInstagramUrl, isXUrl, isYouTubeUrl } from "@/utils/url"
 import { useState } from "react"
 import type { Source } from "@/components/archive/archiveForm"
 import { InstagramLogo } from "@/components/icons/instagram"
 import { XLogo } from "@/components/icons/x"
+import { YouTubeLogo } from "@/components/icons/youtube"
 import { TZDate } from "@date-fns/tz"
 
 interface SupportedPlatform {
@@ -34,6 +35,12 @@ const supportedPlatforms: SupportedPlatform[] = [
     icon: <XLogo />,
     endpoint: "/api/parse-x",
     parser: isXUrl,
+  },
+  {
+    name: "Youtube",
+    icon: <YouTubeLogo />,
+    endpoint: "/api/parse-youtube",
+    parser: isYouTubeUrl,
   },
 ]
 

@@ -34,3 +34,28 @@ export function isXUrl(urlStr: string): boolean {
     return false;
   }
 }
+
+export function isYouTubeUrl(urlStr: string): boolean {
+  try {
+    const url = new URL(
+      urlStr.startsWith("http") ? urlStr : `https://${urlStr}`,
+    )
+    const host = url.hostname.replace(/^www\./, "")
+    const path = url.pathname
+
+    if (!["youtube.com", "m.youtube.com", "youtu.be"].includes(host)) {
+      return false
+    }
+
+    if (host === "youtu.be") return /^\/[\w-]{11}$/.test(path)
+    if (path === "/watch") return /^[\w-]{11}$/.test(url.searchParams.get("v") ?? "")
+    if (/^\/(?:shorts|live)\/[\w-]{11}$/.test(path)) return true
+    if (path === "/playlist") return /^[\w-]+$/.test(url.searchParams.get("list") ?? "")
+    if (/^\/(?:post|channel)\/[\w@.-]+$/.test(path)) return true
+    if (/^\/(?:@|c\/|user\/)[\w@.-]+$/.test(path)) return true
+
+    return false
+  } catch {
+    return false
+  }
+}
