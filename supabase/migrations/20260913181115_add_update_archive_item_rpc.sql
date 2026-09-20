@@ -17,10 +17,11 @@ CREATE OR REPLACE FUNCTION update_archive_item(
 BEGIN
   -- 1. Update main item
   UPDATE archive_items 
-  SET 
+  SET
     title = p_title,
     description = p_description,
-    published_at = p_published_at
+    published_at = p_published_at,
+    updated_at = NOW()
   WHERE id = p_id;
 
   -- 2. Sync sources
