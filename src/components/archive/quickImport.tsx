@@ -15,6 +15,17 @@ import { InstagramLogo } from "@/components/icons/instagram"
 import { XLogo } from "@/components/icons/x"
 import { TZDate } from "@date-fns/tz"
 
+const supportedPlatforms = [
+  {
+    name: "Instagram",
+    icon: <InstagramLogo />,
+  },
+  {
+    name: "Twitter",
+    icon: <XLogo />,
+  },
+]
+
 export interface QuickImportValues {
   description: string
   publishedAt: TZDate
@@ -96,14 +107,15 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
             />
             <div className="flex items-center gap-1.5 pt-0.5 text-xs text-muted-foreground">
               <span>지원 플랫폼:</span>
-              <span className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground">
-                <InstagramLogo />
-                Instagram
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground">
-                <XLogo />
-                Twitter
-              </span>
+              {supportedPlatforms.map((platform) => (
+                <span
+                  key={platform.name}
+                  className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground"
+                >
+                  {platform.icon}
+                  {platform.name}
+                </span>
+              ))}
             </div>
           </div>
           <div className="flex justify-end gap-2">
