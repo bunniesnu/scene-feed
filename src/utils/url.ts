@@ -59,3 +59,18 @@ export function isYouTubeUrl(urlStr: string): boolean {
     return false
   }
 }
+
+export function isPlusChatUrl(urlStr: string): boolean {
+  try {
+    const { hostname, pathname } = new URL(urlStr.startsWith("http") ? urlStr : `https://${urlStr}`);
+    const host = hostname.replace(/^www\./, "");
+    const isMnetHost = host === "artist.mnetplus.world";
+
+    const pathPattern =
+      /^\/main\/stg\/[^/]+\/(?:story\/feed|community\/board\/[^/]+\/post|surveys|contents|shop\/membership)\/[a-zA-Z0-9_-]+/i;
+
+    return isMnetHost && pathPattern.test(pathname);
+  } catch {
+    return false;
+  }
+}
