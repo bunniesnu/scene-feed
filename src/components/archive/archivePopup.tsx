@@ -3,10 +3,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
 import { ArrowUpRightIcon } from "lucide-react"
 import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { Badge } from "@/components/ui/badge";
+import { ActionsMenu } from "@/components/archive/archiveActionMenu";
 
 function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sourceUrl: string | null }) {
   if (!sourceName && !sourceUrl) {
@@ -34,12 +34,26 @@ function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sour
   )
 }
 
-export function ArchivePopup({ item, onEdit }: { item: ArchiveItemWithTagsAndSources, onEdit: (() => void) | null }) {
+interface ArchivePopupPropsUnauthenticated {
+  item: ArchiveItemWithTagsAndSources
+  onEdit: null
+  onDelete: null
+}
+
+interface ArchivePopupPropsAuthenticated {
+  item: ArchiveItemWithTagsAndSources
+  onEdit: () => void
+  onDelete: () => void
+}
+
+type ArchivePopupProps = ArchivePopupPropsUnauthenticated | ArchivePopupPropsAuthenticated
+
+export function ArchivePopup({ item, onEdit, onDelete }: ArchivePopupProps) {
   return (
     <DialogContent>
-      <DialogHeader className="flex flex-row items-center pb-1">
+      <DialogHeader className="flex flex-row items-center justify-between pb-1">
         <DialogTitle>{item.title}</DialogTitle>
-        {onEdit && <Button variant="outline" size="sm" onClick={onEdit}>수정</Button>}
+        {onEdit && onDelete && <ActionsMenu onEdit={onEdit} onDelete={onDelete} />}
       </DialogHeader>
 
       <div className="space-y-4">
