@@ -1,18 +1,32 @@
-export function getTodayRange() {
-  const now = new Date();
+import { format } from "date-fns"
+import { TZDate } from "@date-fns/tz"
 
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul",
+export function getTodayRange() {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const now = new TZDate();
+
+  const date = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  });
+  }).format(now);
 
-  const date = formatter.format(now);
-
-  const start = new Date(`${date}T00:00:00+09:00`);
-  const end = new Date(`${date}T00:00:00+09:00`);
+  const start = new TZDate(`${date}T00:00:00`, timeZone);
+  const end = new TZDate(`${date}T00:00:00`, timeZone);
   end.setDate(end.getDate() + 1);
 
   return { start, end };
+}
+
+export function toLocalInput(tzDate: TZDate): string {
+  return format(tzDate, "yyyy-MM-dd'T'HH:mm")
+}
+
+export function fromLocalInput(
+  localInput: string,
+  timeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
+): TZDate {
+  // Append seconds to ensure strict ISO-8601 parsing across all runtimes
+  return new TZDate(`${localInput}:00`, timeZone)
 }

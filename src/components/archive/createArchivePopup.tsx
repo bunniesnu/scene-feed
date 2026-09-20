@@ -20,7 +20,7 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   async function handleSubmit(data: ArchiveItemFormValues) {
     await postArchiveItem.mutateAsync({
       title: data.title,
-      description: data.description || null,
+      description: data.description,
       published_at: data.publishedAt,
       sources: data.sources,
       tag_ids: data.selectedTagIds,
