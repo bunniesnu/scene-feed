@@ -2,19 +2,18 @@ import { format } from "date-fns"
 import { TZDate } from "@date-fns/tz"
 
 export function getTodayRange() {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const now = new TZDate();
 
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul",
+  const date = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  });
+  }).format(now);
 
-  const date = formatter.format(now);
-
-  const start = new TZDate(`${date}T00:00:00+09:00`);
-  const end = new TZDate(`${date}T00:00:00+09:00`);
+  const start = new TZDate(`${date}T00:00:00`, timeZone);
+  const end = new TZDate(`${date}T00:00:00`, timeZone);
   end.setDate(end.getDate() + 1);
 
   return { start, end };
