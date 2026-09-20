@@ -15,7 +15,14 @@ import { InstagramLogo } from "@/components/icons/instagram"
 import { XLogo } from "@/components/icons/x"
 import { TZDate } from "@date-fns/tz"
 
-const supportedPlatforms = [
+interface SupportedPlatform {
+  name: string
+  icon: React.ReactNode
+  endpoint: string
+  parser: (url: string) => boolean
+}
+
+const supportedPlatforms: SupportedPlatform[] = [
   {
     name: "Instagram",
     icon: <InstagramLogo />,
