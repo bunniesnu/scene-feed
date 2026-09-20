@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { cleanUrl, isInstagramUrl, isXUrl, isYouTubeUrl } from "@/utils/url"
+import { cleanUrl, isInstagramUrl, isPlusChatUrl, isXUrl, isYouTubeUrl } from "@/utils/url"
 import { useState } from "react"
 import type { Source } from "@/components/archive/archiveForm"
 import { InstagramLogo } from "@/components/icons/instagram"
@@ -42,6 +42,12 @@ const supportedPlatforms: SupportedPlatform[] = [
     endpoint: "/api/parse-youtube",
     parser: isYouTubeUrl,
   },
+  {
+    name: "PlusChat",
+    icon: <YouTubeLogo />,
+    endpoint: "/api/parse-pluschat",
+    parser: isPlusChatUrl,
+  },
 ]
 
 interface InstagramData {
@@ -66,7 +72,15 @@ interface YouTubeData {
   thumbnails: Record<string, { url: string; width: number; height: number }>
 }
 
-type ParsedData = InstagramData | XData | YouTubeData
+interface PlusChatResponse {
+  caption: string | null;
+  author: string | null;
+  authorUrl: string | null;
+  timestamp: string | null;
+  images: string[];
+}
+
+type ParsedData = InstagramData | XData | YouTubeData | PlusChatResponse
 
 export interface QuickImportValues {
   description: string
