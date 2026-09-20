@@ -19,10 +19,14 @@ const supportedPlatforms = [
   {
     name: "Instagram",
     icon: <InstagramLogo />,
+    endpoint: "/api/parse-instagram",
+    parser: isInstagramUrl,
   },
   {
     name: "Twitter",
     icon: <XLogo />,
+    endpoint: "/api/parse-x",
+    parser: isXUrl,
   },
 ]
 
@@ -45,18 +49,15 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
   async function handleQuickImport() {
     let description = ""
     let publishedAt = new TZDate()
-    let sources: Source[] = []
     const url = cleanUrl(quickUrl.trim())
     if (!url) return
 
-    const isInsta = isInstagramUrl(url)
-    const isX = isXUrl(url)
+    const platform = supportedPlatforms.find(({ parser }) => parser(url))
 
-    if (isInsta || isX) {
+    if (platform) {
       setIsParsing(true)
       try {
-        const endpoint = isInsta ? "/api/parse-instagram" : "/api/parse-x"
-        const res = await fetch(`${endpoint}?url=${encodeURIComponent(url)}`)
+        const res = await fetch(`${platform.endpoint}?url=${encodeURIComponent(url)}`)
         if (res.ok) {
           const data: { caption?: string; timestamp?: string } = await res.json()
           if (data.caption) description = data.caption
@@ -72,12 +73,10 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
       }
     }
 
-    const sourceName = isInsta ? "Instagram" : isX ? "X" : "Link"
-    sources = [{ id: null, name: sourceName, url }]
     onImport({
       description,
       publishedAt,
-      sources: sources,
+      sources: [{ id: null, name: platform?.name ?? "Link", url }],
     })
     onClose()
   }
