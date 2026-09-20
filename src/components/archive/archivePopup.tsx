@@ -1,9 +1,10 @@
 import {
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { ArrowUpRightIcon } from "lucide-react"
+import { ArrowUpRightIcon, X } from "lucide-react"
 import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { Badge } from "@/components/ui/badge";
 import { ActionsMenu } from "@/components/archive/archiveActionMenu";
@@ -50,10 +51,16 @@ type ArchivePopupProps = ArchivePopupPropsUnauthenticated | ArchivePopupPropsAut
 
 export function ArchivePopup({ item, onEdit, onDelete }: ArchivePopupProps) {
   return (
-    <DialogContent>
+    <DialogContent className="[&>button]:hidden">
       <DialogHeader className="flex flex-row items-center justify-between pb-1">
         <DialogTitle>{item.title}</DialogTitle>
-        {onEdit && onDelete && <ActionsMenu onEdit={onEdit} onDelete={onDelete} />}
+        <div className="flex items-center gap-1">
+          {onEdit && onDelete && <ActionsMenu onEdit={onEdit} onDelete={onDelete} />}
+          <DialogClose className="h-8 w-8 flex items-center justify-center rounded-lg opacity-70 hover:opacity-100 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
+        </div>
       </DialogHeader>
 
       <div className="space-y-4">
