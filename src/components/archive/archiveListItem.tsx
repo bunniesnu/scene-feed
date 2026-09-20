@@ -12,6 +12,7 @@ import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { ArchivePopup } from "@/components/archive/archivePopup";
 import { Badge } from "@/components/ui/badge";
 import { useUpdateArchiveItem } from "@/api/mutations/updateItem"
+import { useAdmin } from "@/hooks/auth/admin"
 
 function ArchiveListItemCard({ item, onClick }: { item: ArchiveItemWithTagsAndSources; onClick: () => void }) {
   return (
@@ -52,6 +53,7 @@ export function ArchiveListItem({ item }: { item: ArchiveItemWithTagsAndSources 
   const [open, setOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const updatePostArchiveItem = useUpdateArchiveItem()
+  const { isAdmin } = useAdmin()
 
   return <>
     <Dialog open={open && isEditing} onOpenChange={(v) => {
@@ -90,7 +92,7 @@ export function ArchiveListItem({ item }: { item: ArchiveItemWithTagsAndSources 
       if (!v) setIsEditing(false);
     }}>
       <DialogTrigger render={<ArchiveListItemCard item={item} onClick={() => setOpen(true)} />} />
-       <ArchivePopup item={item} onEdit={() => setIsEditing(true)} />
+      <ArchivePopup item={item} onEdit={ isAdmin ? (() => setIsEditing(true)) : null } />
     </Dialog>
   </>
 }

@@ -34,7 +34,7 @@ function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sour
   )
 }
 
-export function ArchivePopup({ item, onEdit }: { item: ArchiveItemWithTagsAndSources, onEdit?: () => void }) {
+export function ArchivePopup({ item, onEdit }: { item: ArchiveItemWithTagsAndSources, onEdit: (() => void) | null }) {
   return (
     <DialogContent>
       <DialogHeader className="flex flex-row items-center pb-1">
