@@ -3,7 +3,7 @@ export function cleanUrl(rawUrl: string): string {
     const parsed = new URL(rawUrl)
     const trackingParams = [
       "igsh", "utm_source", "utm_medium", "utm_campaign",
-      "utm_term", "utm_content", "s", "t", "ref_src"
+      "utm_term", "utm_content", "s", "t", "ref_src", "si"
     ]
     trackingParams.forEach((param) => parsed.searchParams.delete(param))
     return parsed.toString()
