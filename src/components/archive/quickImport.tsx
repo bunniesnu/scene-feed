@@ -44,6 +44,30 @@ const supportedPlatforms: SupportedPlatform[] = [
   },
 ]
 
+interface InstagramData {
+  caption: string | null
+  timestamp: string | null
+}
+
+interface XData {
+  caption: string
+  author: string | null
+  authorUrl: string | null
+  timestamp: string
+}
+
+interface YouTubeData {
+  videoId: string
+  title: string
+  author: string
+  channelId: string
+  description: string
+  timestamp: string
+  thumbnails: Record<string, { url: string; width: number; height: number }>
+}
+
+type ParsedData = InstagramData | XData | YouTubeData
+
 export interface QuickImportValues {
   description: string
   publishedAt: TZDate
@@ -73,8 +97,12 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
       try {
         const res = await fetch(`${platform.endpoint}?url=${encodeURIComponent(url)}`)
         if (res.ok) {
-          const data: { caption?: string; timestamp?: string } = await res.json()
-          if (data.caption) description = data.caption
+          const data: ParsedData = await res.json()
+          if ("caption" in data) {
+            description = data.caption ?? ""
+          } else if ("title" in data) {
+            description = `제목: ${data.title}\n채널: ${data.author}\n\n${data.description}`
+          }
           if (data.timestamp) {
             const d = new TZDate(data.timestamp)
             if (!isNaN(d.getTime())) {
