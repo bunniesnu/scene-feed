@@ -74,6 +74,7 @@ interface YouTubeData {
 }
 
 interface PlusChatResponse {
+  title: string | null;
   caption: string | null;
   author: string | null;
   authorUrl: string | null;
@@ -113,7 +114,9 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
         const res = await fetch(`${platform.endpoint}?url=${encodeURIComponent(url)}`)
         if (res.ok) {
           const data: ParsedData = await res.json()
-          if ("caption" in data) {
+          if ("caption" in data && "title" in data) {
+            description = data.caption ?? data.title ?? ""
+          } else if ("caption" in data) {
             description = data.caption ?? ""
           } else if ("title" in data) {
             description = `제목: ${data.title}\n채널: ${data.author}\n\n${data.description}`
