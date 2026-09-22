@@ -12,21 +12,18 @@ export const onRequest = async ({ request: req }: { request: Request }) => {
       return Response.json({ error: "Missing url parameter" }, { status: 400 });
     }
 
-    const targetUrl = new URL(url);
-    const normalizedHost = targetUrl.hostname.replace(/^www\./i, "");
-    const urlMatch = targetUrl.pathname.match(
-      /^\/main\/stg\/([^/]+)\/(?:story\/feed|community\/board\/[^/]+\/post|surveys|contents|shop\/membership)\/([a-zA-Z0-9_-]+)$/i
-    );
-    const isAllowedProtocol = targetUrl.protocol === "https:" || targetUrl.protocol === "http:";
-    const isAllowedHost = normalizedHost === "artist.mnetplus.world";
+    const targetUrl = decodeURIComponent(url);
 
-    if (!isAllowedProtocol || !isAllowedHost || !urlMatch) {
+    const urlMatch = targetUrl.match(
+      /artist\.mnetplus\.world\/main\/stg\/([^/]+)\/(?:story\/feed|community\/board\/[^/]+\/post|surveys|contents|shop\/membership)\/([a-zA-Z0-9_-]+)/i
+    );
+    if (!urlMatch) {
       return Response.json({ error: "Invalid Mnet Plus URL" }, { status: 400 });
     }
 
     const [, spaceId] = urlMatch;
 
-    const res = await fetch(targetUrl.toString(), {
+    const res = await fetch(targetUrl, {
       headers: {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",

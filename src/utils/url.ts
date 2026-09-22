@@ -49,7 +49,10 @@ export function isYouTubeUrl(urlStr: string): boolean {
 
     if (host === "youtu.be") return /^\/[\w-]{11}$/.test(path)
     if (path === "/watch") return /^[\w-]{11}$/.test(url.searchParams.get("v") ?? "")
-    if (/^\/(?:shorts|embed)\/[\w-]{11}$/.test(path)) return true
+    if (/^\/(?:shorts|live)\/[\w-]{11}$/.test(path)) return true
+    if (path === "/playlist") return /^[\w-]+$/.test(url.searchParams.get("list") ?? "")
+    if (/^\/(?:post|channel)\/[\w@.-]+$/.test(path)) return true
+    if (/^\/(?:@|c\/|user\/)[\w@.-]+$/.test(path)) return true
 
     return false
   } catch {

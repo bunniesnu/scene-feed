@@ -38,7 +38,7 @@ const supportedPlatforms: SupportedPlatform[] = [
     parser: isXUrl,
   },
   {
-    name: "YouTube",
+    name: "Youtube",
     icon: <YouTubeLogo />,
     endpoint: "/api/parse-youtube",
     parser: isYouTubeUrl,
@@ -103,11 +103,7 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
   async function handleQuickImport() {
     let description = ""
     let publishedAt = new TZDate()
-    const trimmedUrl = quickUrl.trim()
-    if (!trimmedUrl) return
-
-    const normalizedUrl = /^https?:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`
-    const url = cleanUrl(normalizedUrl)
+    const url = cleanUrl(quickUrl.trim())
     if (!url) return
 
     const platform = supportedPlatforms.find(({ parser }) => parser(url))
