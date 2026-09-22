@@ -29,7 +29,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/supabase/, ""),
       },
       "/api": {
-        target: "http://localhost:8787",
+        target: "http://localhost:8788",
         changeOrigin: true,
       }
     },

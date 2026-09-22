@@ -25,3 +25,7 @@ dist-ssr
 
 .env*
 !.env.example
+
+# Wrangler local dev files
+.dev.vars
+.wrangler/

@@ -1,12 +1,13 @@
 import {
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { ArrowUpRightIcon } from "lucide-react"
+import { ArrowUpRightIcon, X } from "lucide-react"
 import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { Badge } from "@/components/ui/badge";
+import { ActionsMenu } from "@/components/archive/archiveActionMenu";
 
 function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sourceUrl: string | null }) {
   if (!sourceName && !sourceUrl) {
@@ -34,12 +35,32 @@ function SourceLink({ sourceName, sourceUrl }: { sourceName: string | null; sour
   )
 }
 
-export function ArchivePopup({ item, onEdit }: { item: ArchiveItemWithTagsAndSources, onEdit: (() => void) | null }) {
+interface ArchivePopupPropsUnauthenticated {
+  item: ArchiveItemWithTagsAndSources
+  onEdit: null
+  onDelete: null
+}
+
+interface ArchivePopupPropsAuthenticated {
+  item: ArchiveItemWithTagsAndSources
+  onEdit: () => void
+  onDelete: () => void
+}
+
+type ArchivePopupProps = ArchivePopupPropsUnauthenticated | ArchivePopupPropsAuthenticated
+
+export function ArchivePopup({ item, onEdit, onDelete }: ArchivePopupProps) {
   return (
-    <DialogContent>
-      <DialogHeader className="flex flex-row items-center pb-1">
+    <DialogContent className="[&>button]:hidden">
+      <DialogHeader className="flex flex-row items-center justify-between pb-1">
         <DialogTitle>{item.title}</DialogTitle>
-        {onEdit && <Button variant="outline" size="sm" onClick={onEdit}>수정</Button>}
+        <div className="flex items-center gap-1">
+          {onEdit && onDelete && <ActionsMenu onEdit={onEdit} onDelete={onDelete} />}
+          <DialogClose className="h-8 w-8 flex items-center justify-center rounded-lg opacity-70 hover:opacity-100 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
+        </div>
       </DialogHeader>
 
       <div className="space-y-4">

@@ -8,12 +8,81 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { cleanUrl, isInstagramUrl, isXUrl } from "@/utils/url"
+import { cleanUrl, isInstagramUrl, isPlusChatUrl, isXUrl, isYouTubeUrl } from "@/utils/url"
 import { useState } from "react"
 import type { Source } from "@/components/archive/archiveForm"
 import { InstagramLogo } from "@/components/icons/instagram"
 import { XLogo } from "@/components/icons/x"
+import { YouTubeLogo } from "@/components/icons/youtube"
+import { PlusChatLogo } from "@/components/icons/pluschat"
 import { TZDate } from "@date-fns/tz"
+
+interface SupportedPlatform {
+  name: string
+  icon: React.ReactNode
+  endpoint: string
+  parser: (url: string) => boolean
+}
+
+const supportedPlatforms: SupportedPlatform[] = [
+  {
+    name: "Instagram",
+    icon: <InstagramLogo />,
+    endpoint: "/api/parse-instagram",
+    parser: isInstagramUrl,
+  },
+  {
+    name: "Twitter",
+    icon: <XLogo />,
+    endpoint: "/api/parse-x",
+    parser: isXUrl,
+  },
+  {
+    name: "Youtube",
+    icon: <YouTubeLogo />,
+    endpoint: "/api/parse-youtube",
+    parser: isYouTubeUrl,
+  },
+  {
+    name: "PlusChat",
+    icon: <PlusChatLogo />,
+    endpoint: "/api/parse-pluschat",
+    parser: isPlusChatUrl,
+  },
+]
+
+interface InstagramData {
+  caption: string | null
+  timestamp: string | null
+}
+
+interface XData {
+  caption: string
+  author: string | null
+  authorUrl: string | null
+  timestamp: string
+}
+
+interface YouTubeData {
+  videoId: string
+  title: string
+  author: string
+  channelId: string
+  description: string
+  timestamp: string
+  thumbnails: Record<string, { url: string; width: number; height: number }>
+}
+
+interface PlusChatResponse {
+  title: string | null;
+  caption: string | null;
+  author: string | null;
+  authorUrl: string | null;
+  timestamp: string | null;
+  images: string[];
+}
+
+type ParsedData = InstagramData | XData | YouTubeData | PlusChatResponse
 
 export interface QuickImportValues {
   description: string
@@ -34,21 +103,24 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
   async function handleQuickImport() {
     let description = ""
     let publishedAt = new TZDate()
-    let sources: Source[] = []
     const url = cleanUrl(quickUrl.trim())
     if (!url) return
 
-    const isInsta = isInstagramUrl(url)
-    const isX = isXUrl(url)
+    const platform = supportedPlatforms.find(({ parser }) => parser(url))
 
-    if (isInsta || isX) {
+    if (platform) {
       setIsParsing(true)
       try {
-        const endpoint = isInsta ? "/api/parse-instagram" : "/api/parse-x"
-        const res = await fetch(`${endpoint}?url=${encodeURIComponent(url)}`)
+        const res = await fetch(`${platform.endpoint}?url=${encodeURIComponent(url)}`)
         if (res.ok) {
-          const data: { caption?: string; timestamp?: string } = await res.json()
-          if (data.caption) description = data.caption
+          const data: ParsedData = await res.json()
+          if ("caption" in data && "title" in data) {
+            description = data.caption ?? data.title ?? ""
+          } else if ("caption" in data) {
+            description = data.caption ?? ""
+          } else if ("title" in data) {
+            description = `제목: ${data.title}\n채널: ${data.author}\n\n${data.description}`
+          }
           if (data.timestamp) {
             const d = new TZDate(data.timestamp)
             if (!isNaN(d.getTime())) {
@@ -61,12 +133,10 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
       }
     }
 
-    const sourceName = isInsta ? "Instagram" : isX ? "X" : "Link"
-    sources = [{ id: null, name: sourceName, url }]
     onImport({
       description,
       publishedAt,
-      sources: sources,
+      sources: [{ id: null, name: platform?.name ?? "Link", url }],
     })
     onClose()
   }
@@ -96,14 +166,15 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
             />
             <div className="flex items-center gap-1.5 pt-0.5 text-xs text-muted-foreground">
               <span>지원 플랫폼:</span>
-              <span className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground">
-                <InstagramLogo />
-                Instagram
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground">
-                <XLogo />
-                Twitter
-              </span>
+              {supportedPlatforms.map((platform) => (
+                <span
+                  key={platform.name}
+                  className="inline-flex items-center gap-1 rounded-md border bg-muted/50 px-1.5 py-0.5 font-medium text-foreground"
+                >
+                  {platform.icon}
+                  {platform.name}
+                </span>
+              ))}
             </div>
           </div>
           <div className="flex justify-end gap-2">

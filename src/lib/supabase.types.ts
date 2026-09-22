@@ -152,6 +152,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      delete_archive_item: { Args: { p_item_id: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
       update_archive_item: {
         Args: {
