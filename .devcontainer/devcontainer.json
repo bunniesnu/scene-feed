@@ -1,0 +1,11 @@
+{
+  "name": "Node + pnpm",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "22",
+      "pnpmVersion": "10.15.0"
+    }
+  },
+  "postCreateCommand": "pnpm install"
+}
