@@ -158,18 +158,14 @@ export type Database = {
         Args: { keyword: string }
         Returns: {
           created_at: string
-          description: string | null
+          description: string
           id: string
           published_at: string
+          sources: Database["public"]["CompositeTypes"]["source_payload"][]
+          tags: Database["public"]["CompositeTypes"]["tag_wrapper"][]
           title: string
           updated_at: string
         }[]
-        SetofOptions: {
-          from: "*"
-          to: "archive_items"
-          isOneToOne: false
-          isSetofReturn: true
-        }
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
@@ -193,10 +189,23 @@ export type Database = {
         name: string | null
         url: string | null
       }
+      source_payload: {
+        id: string | null
+        name: string | null
+        url: string | null
+      }
       source_update_input: {
         id: string | null
         name: string | null
         url: string | null
+      }
+      tag_payload: {
+        id: string | null
+        name: string | null
+        category: string | null
+      }
+      tag_wrapper: {
+        tag: Database["public"]["CompositeTypes"]["tag_payload"] | null
       }
     }
   }
