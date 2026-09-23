@@ -72,20 +72,20 @@ export function ArchivePopup({ item, onEdit, onDelete }: ArchivePopupProps) {
           </div>
         )}
         {item.description && (
-        <p className="whitespace-pre-wrap text-sm">
+          <p className="whitespace-pre-wrap text-sm">
             {item.description}
-        </p>
+          </p>
         )}
 
         <div className="flex justify-between items-center">
           <div className="text-sm text-muted-foreground">
-              {item.published_at.toLocaleString(undefined, {
+            {item.published_at.toLocaleString(undefined, {
               year: "numeric",
               month: "numeric",
               day: "numeric",
               hour: "numeric",
               minute: "numeric",
-              })}
+            })}
           </div>
           <div className="flex gap-2">
             { item.sources.map(source => <SourceLink sourceName={source.name} sourceUrl={source.url} />) }
