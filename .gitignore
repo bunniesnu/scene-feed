@@ -29,3 +29,7 @@ dist-ssr
 # Wrangler local dev files
 .dev.vars
 .wrangler/
+
+# DB data
+backup.sh
+supabase/seed.sql

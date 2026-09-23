@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Outlet, createRootRoute, Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/auth/status';
 import { useLogout } from "@/hooks/auth/logout"
-import { LogOut } from "lucide-react"
+import { Search } from "lucide-react"
+import { SearchPopup } from '@/components/archive/searchPopup';
+import { LogoutDialog } from '@/components/logoutPopup';
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -11,6 +14,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   const { isLoggedIn } = useAuth()
   const logout = useLogout()
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <div className="min-h-dvh flex flex-col items-center">
@@ -19,10 +23,11 @@ function RootComponent() {
           <Link to="/" className="font-bold text-lg">
             SCENE-feed
           </Link>
-          <nav className="flex items-center gap-4 text-sm">
-            { isLoggedIn ? <Button variant="outline" onClick={logout}>
-              <LogOut />
-            </Button> : <Link to="/login">
+          <nav className="flex items-center gap-2 text-sm">
+            <Button variant="outline" onClick={() => setSearchOpen(true)}>
+              <Search className="h-4 w-4 cursor-pointer" onClick={() => setSearchOpen(true)} />
+            </Button>
+            { isLoggedIn ? <LogoutDialog onLogout={logout} /> : <Link to="/login">
               <Button variant="outline" size="lg" className="rounded-full cursor-pointer px-4">
                 Sign In
               </Button>
@@ -33,6 +38,7 @@ function RootComponent() {
       <main className="flex-1 w-full max-w-3xl px-4 py-6">
         <Outlet />
       </main>
+      <SearchPopup open={searchOpen} setOpen={setSearchOpen} />
     </div>
   )
 }

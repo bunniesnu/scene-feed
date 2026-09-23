@@ -154,6 +154,19 @@ export type Database = {
       }
       delete_archive_item: { Args: { p_item_id: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
+      search_archive: {
+        Args: { keyword: string }
+        Returns: {
+          created_at: string
+          description: string
+          id: string
+          published_at: string
+          sources: Database["public"]["CompositeTypes"]["source_payload"][]
+          tags: Database["public"]["CompositeTypes"]["tag_wrapper"][]
+          title: string
+          updated_at: string
+        }[]
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       update_archive_item: {
@@ -176,10 +189,23 @@ export type Database = {
         name: string | null
         url: string | null
       }
+      source_payload: {
+        id: string | null
+        name: string | null
+        url: string | null
+      }
       source_update_input: {
         id: string | null
         name: string | null
         url: string | null
+      }
+      tag_payload: {
+        id: string | null
+        name: string | null
+        category: string | null
+      }
+      tag_wrapper: {
+        tag: Database["public"]["CompositeTypes"]["tag_payload"] | null
       }
     }
   }
