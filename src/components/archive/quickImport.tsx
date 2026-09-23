@@ -164,7 +164,7 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
               }}
               disabled={isParsing}
             />
-            <div className="flex items-center gap-1.5 pt-0.5 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1.5 pt-0.5 text-xs text-muted-foreground flex-wrap">
               <span>지원 플랫폼:</span>
               {supportedPlatforms.map((platform) => (
                 <span
