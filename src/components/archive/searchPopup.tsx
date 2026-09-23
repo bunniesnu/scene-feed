@@ -30,7 +30,7 @@ export function SearchPopup({ open, setOpen }: SearchProps) {
 
       <DialogContent className="top-12 translate-y-0 p-3 sm:max-w-lg [&>button]:hidden">
         <form onSubmit={handleSearch} className="relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-2 h-4 w-4 text-muted-foreground" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
