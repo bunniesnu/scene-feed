@@ -51,7 +51,7 @@ type ArchivePopupProps = ArchivePopupPropsUnauthenticated | ArchivePopupPropsAut
 
 export function ArchivePopup({ item, onEdit, onDelete }: ArchivePopupProps) {
   return (
-    <DialogContent className="[&>button]:hidden">
+    <DialogContent className="[&>button]:hidden max-h-9/10 overflow-y-scroll">
       <DialogHeader className="flex flex-row items-center justify-between pb-1">
         <DialogTitle>{item.title}</DialogTitle>
         <div className="flex items-center gap-1">
