@@ -21,7 +21,12 @@ export const onRequest = async ({ request: req }: { request: Request }) => {
     }
 
     const tweetId = match[1];
-    const res = await fetch(`https://api.fxtwitter.com/status/${tweetId}`);
+    const res = await fetch(`https://api.fxtwitter.com/status/${tweetId}`, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+      },
+    });
     if (!res.ok) {
       return Response.json({ error: "Failed to fetch tweet data" }, { status: res.status });
     }
