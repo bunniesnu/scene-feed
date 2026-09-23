@@ -18,6 +18,7 @@ function RouteComponent() {
   const items = useSearchArchive(q);
   return (
     <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold">Search results for "{q}"</h1>
       {items.isLoading ? (
         <Loading />
       ) : items.isError ? (
