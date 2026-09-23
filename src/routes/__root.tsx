@@ -3,8 +3,9 @@ import { Outlet, createRootRoute, Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/auth/status';
 import { useLogout } from "@/hooks/auth/logout"
-import { LogOut, Search } from "lucide-react"
+import { Search } from "lucide-react"
 import { SearchPopup } from '@/components/archive/searchPopup';
+import { LogoutDialog } from '@/components/logoutPopup';
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -26,9 +27,7 @@ function RootComponent() {
             <Button variant="outline" onClick={() => setSearchOpen(true)}>
               <Search className="h-4 w-4 cursor-pointer" onClick={() => setSearchOpen(true)} />
             </Button>
-            { isLoggedIn ? <Button variant="outline" onClick={logout}>
-              <LogOut />
-            </Button> : <Link to="/login">
+            { isLoggedIn ? <LogoutDialog onLogout={logout} /> : <Link to="/login">
               <Button variant="outline" size="lg" className="rounded-full cursor-pointer px-4">
                 Sign In
               </Button>
