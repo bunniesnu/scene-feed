@@ -18,7 +18,7 @@ function RouteComponent() {
   const items = useSearchArchive(q);
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-2 items-center">
+      <div className="text-wrap">
         <h1 className="text-2xl font-semibold">Search results for "{q}"</h1>
         <span>({items.data?.length ? items.data.length : "-"} results)</span>
       </div>
