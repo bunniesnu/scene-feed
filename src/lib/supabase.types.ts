@@ -154,6 +154,23 @@ export type Database = {
       }
       delete_archive_item: { Args: { p_item_id: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
+      search_archive: {
+        Args: { keyword: string }
+        Returns: {
+          created_at: string
+          description: string | null
+          id: string
+          published_at: string
+          title: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "archive_items"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       update_archive_item: {
