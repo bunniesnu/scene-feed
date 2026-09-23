@@ -21,7 +21,7 @@
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/supabase.types.ts",
     "db:update": "pnpm db:start && supabase migration up && pnpm db:types",
-    "functions": "wrangler pages dev public --port 8788"
+    "functions": "wrangler pages dev public --port 8788 --binding YOUTUBE_API_KEY=$YOUTUBE_API_KEY"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
