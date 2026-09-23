@@ -1,10 +1,9 @@
 import {
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { ArrowUpRightIcon, X } from "lucide-react"
+import { ArrowUpRightIcon } from "lucide-react"
 import type { ArchiveItemWithTagsAndSources } from "@/types/archive"
 import { Badge } from "@/components/ui/badge";
 import { ActionsMenu } from "@/components/archive/archiveActionMenu";
