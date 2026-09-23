@@ -16,6 +16,7 @@ import { XLogo } from "@/components/icons/x"
 import { YouTubeLogo } from "@/components/icons/youtube"
 import { PlusChatLogo } from "@/components/icons/pluschat"
 import { TZDate } from "@date-fns/tz"
+import { CloseButton } from "@/components/closeButton"
 
 interface SupportedPlatform {
   name: string
@@ -142,10 +143,11 @@ export function QuickImportDialog({ onClose, open, onImport }: QuickImportDialog
   }
 
   return (
-    <Dialog open={open}>
-      <DialogContent className="sm:max-w-md p-5">
-        <DialogHeader>
+    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-md p-5 [&>button]:hidden">
+        <DialogHeader className="flex flex-row items-center justify-between pb-1">
           <DialogTitle>빠른 링크 가져오기</DialogTitle>
+          <CloseButton />
         </DialogHeader>
         <div className="space-y-4 pt-2">
           <div className="space-y-2">

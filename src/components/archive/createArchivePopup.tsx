@@ -10,6 +10,7 @@ import {
 import { usePostArchiveItem } from "@/api/mutations/insertItem"
 import { QuickImportDialog, type QuickImportValues } from "@/components/archive/quickImport"
 import { type ArchiveItemFormValues, ArchiveItemForm } from "@/components/archive/archiveForm"
+import { CloseButton } from "@/components/closeButton"
 
 export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
@@ -39,20 +40,23 @@ export function CreateArchiveItemDialog({ children }: { children: ReactNode }) {
           {children}
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-lg p-5 max-h-9/10 overflow-y-scroll overflow-x-clip">
-          <DialogHeader className="flex flex-row items-center pb-1">
-            <DialogTitle className="text-xl font-semibold">아카이브 추가</DialogTitle>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setOpen(false)
-                setImportDialogOpen(true)
-              }}
-            >
-              빠른 가져오기
-            </Button>
+        <DialogContent className="sm:max-w-lg p-5 max-h-9/10 overflow-y-scroll overflow-x-clip [&>button]:hidden">
+          <DialogHeader className="flex flex-row items-center justify-between pb-1">
+            <div className="flex flex-row items-center gap-2">
+              <DialogTitle className="text-xl font-semibold">아카이브 추가</DialogTitle>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setOpen(false)
+                  setImportDialogOpen(true)
+                }}
+              >
+                빠른 가져오기
+              </Button>
+            </div>
+            <CloseButton />
           </DialogHeader>
 
           <ArchiveItemForm
