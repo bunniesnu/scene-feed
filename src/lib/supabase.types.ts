@@ -154,6 +154,8 @@ export type Database = {
       }
       delete_archive_item: { Args: { p_item_id: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
       update_archive_item: {
         Args: {
           p_description: string
