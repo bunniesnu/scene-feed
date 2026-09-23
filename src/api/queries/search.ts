@@ -31,7 +31,7 @@ async function searchArchive(keyword: string) {
 
 export function useSearchArchive(keyword: string) {
   return useQuery({
-    queryKey: ["archive_items", "search", keyword],
+    queryKey: ["archive_items", "search", keyword.toLowerCase()],
     queryFn: () => searchArchive(keyword),
     enabled: Boolean(keyword.trim()),
   })
